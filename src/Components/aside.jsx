@@ -14,7 +14,7 @@ import teachericon from "./svg/teachericon";
 const Aside = () => {
   return (
     <div className="w-fit">
-      <Sidebar aria-label="Sidebar with multi-level dropdown example">
+      <Sidebar aria-label="Sidebar Menu">
         <Sidebar.Items>
           <Sidebar.ItemGroup>
             <Sidebar.Item as={Link} to="dashboard" icon={dash}>
