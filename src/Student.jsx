@@ -1,12 +1,29 @@
 import React, { useMemo, useRef, useState } from "react";
 
-import MaterialReactTable from "material-react-table";
+import MaterialReactTable, {
+  MRT_FullScreenToggleButton,
+  MRT_GlobalFilterTextField,
+  MRT_ShowHideColumnsButton,
+  MRT_TableInstance,
+  MRT_TablePagination,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleFiltersButton,
+  MRT_ToolbarAlertBanner,
+  MaterialReactTableProps,
+  MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_SortingState,
+  MRT_Row,
+  MRT_Cell,
+} from "material-react-table";
 
 import { Box, IconButton, Pagination, Toolbar, Tooltip } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "flowbite-react";
 
 const Student = () => {
   const [columnFilters, setColumnFilters] = useState([]);
@@ -110,108 +127,161 @@ const Student = () => {
 
   //column definitions...
   return (
-    <MaterialReactTable
-      columns={columns}
-      data={data?.data ?? []} //data is undefined on first render
-      initialState={{
-        showGlobalFilter: true,
-        showColumnFilters: false,
-      }}
-      enableRowActions
-      manualFiltering
-      manualPagination
-      manualSorting
-      muiToolbarAlertBannerProps={
-        isError
-          ? {
-              color: "error",
+    <section className="bg-white h-full w-full  p-4">
+      <h1 className="mb-4 font-semibold tracking-wide text-lg">Students</h1>
+      <Box className="border-slate-200 rounded border-[1px] p-4">
+        {/* Our Custom External Top Toolbar */}
 
-              children: "Error loading data",
-            }
-          : undefined
-      }
-      onColumnFiltersChange={setColumnFilters}
-      onGlobalFilterChange={setGlobalFilter}
-      onPaginationChange={setPagination}
-      onSortingChange={setSorting}
-      renderBottomToolbarCustomActions={() => (
-        <>
-          <Tooltip arrow title="Refresh Data">
-            <IconButton onClick={() => refetch()}>
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      )}
-      renderRowActions={({ row, table }) => (
-        <Box sx={{ display: "flex", gap: "1rem" }}>
-          <Tooltip arrow placement="left" title="Edit">
-            <IconButton
-              onClick={() => {
-                // setUpdateModalOpen(true);
-                // setSelectedData(row);
-              }}
-            >
-              <Edit />
-            </IconButton>
-          </Tooltip>
+        {tableInstanceRef.current && (
+          <Toolbar
+            sx={(theme) => ({
+              backgroundColor: "#ede7f6",
 
-          <Tooltip arrow placement="right" title="Delete">
-            <IconButton
-              color="error"
-              // onClick={() => handleDeleteRow(row)}
-            >
-              <Delete />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      )}
-      rowCount={data?.meta?.totalRowCount ?? 0}
-      state={{
-        columnFilters,
+              borderRadius: "4px",
 
-        globalFilter,
+              display: "flex",
 
-        isLoading,
+              flexDirection: {
+                xs: "column",
 
-        pagination,
+                lg: "row",
+              },
 
-        showAlertBanner: isError,
+              gap: "1rem",
 
-        showProgressBars: isFetching,
+              justifyContent: "space-between",
 
-        sorting,
-      }}
-      {...(tableInstanceRef.current && (
-        <Toolbar
-          sx={{
-            display: "flex",
-
-            justifyContent: "center",
-
-            flexDirection: "column",
-          }}
-        >
-          <Box
-            className="place-items-center"
-            sx={{ display: "grid", width: "100%" }}
+              p: "1.5rem 0",
+            })}
           >
-            <Pagination
-              variant="outlined"
-              shape="rounded"
-              count={data?.totalPages ?? 0}
-              page={pagination.pageIndex + 1}
-              onChange={(event, value) =>
-                setPagination((prevPagination) => ({
-                  ...prevPagination,
-                  pageIndex: value - 1,
-                }))
+            <Box>
+              <Button
+                className="bg-indigo-500"
+                color="purple"
+                // onClick={() => setCreateModalOpen(true)}
+              >
+                Add Student
+              </Button>
+            </Box>
+
+            <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
+
+            <Box>
+              <MRT_ToggleFiltersButton table={tableInstanceRef.current} />
+
+              <MRT_ShowHideColumnsButton table={tableInstanceRef.current} />
+
+              <MRT_ToggleDensePaddingButton table={tableInstanceRef.current} />
+
+              <MRT_FullScreenToggleButton table={tableInstanceRef.current} />
+            </Box>
+          </Toolbar>
+        )}
+      </Box>
+      <MaterialReactTable
+        columns={columns}
+        data={data?.data ?? []} //data is undefined on first render
+        initialState={{
+          showGlobalFilter: true,
+          showColumnFilters: false,
+        }}
+        enableTopToolbar={false}
+        enableRowActions
+        manualFiltering
+        manualPagination
+        manualSorting
+        muiToolbarAlertBannerProps={
+          isError
+            ? {
+                color: "error",
+
+                children: "Error loading data",
               }
-            />
+            : undefined
+        }
+        onColumnFiltersChange={setColumnFilters}
+        onGlobalFilterChange={setGlobalFilter}
+        onPaginationChange={setPagination}
+        onSortingChange={setSorting}
+        renderBottomToolbarCustomActions={() => (
+          <>
+            <Tooltip arrow title="Refresh Data">
+              <IconButton onClick={() => refetch()}>
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+        renderRowActions={({ row, table }) => (
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Tooltip arrow placement="left" title="Edit">
+              <IconButton
+                onClick={() => {
+                  // setUpdateModalOpen(true);
+                  // setSelectedData(row);
+                }}
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip arrow placement="right" title="Delete">
+              <IconButton
+                color="error"
+                // onClick={() => handleDeleteRow(row)}
+              >
+                <Delete />
+              </IconButton>
+            </Tooltip>
           </Box>
-        </Toolbar>
-      ))}
-    />
+        )}
+        rowCount={data?.meta?.totalRowCount ?? 0}
+        state={{
+          columnFilters,
+
+          globalFilter,
+
+          isLoading,
+
+          pagination,
+
+          showAlertBanner: isError,
+
+          showProgressBars: isFetching,
+
+          sorting,
+        }}
+        {...(tableInstanceRef.current && (
+          <Toolbar
+            sx={{
+              display: "flex",
+
+              justifyContent: "center",
+
+              flexDirection: "column",
+            }}
+          >
+            <Box
+              className="place-items-center"
+              sx={{ display: "grid", width: "100%" }}
+            >
+              <Pagination
+                variant="outlined"
+                shape="rounded"
+                count={data?.totalPages ?? 0}
+                page={pagination.pageIndex + 1}
+                onChange={(event, value) =>
+                  setPagination((prevPagination) => ({
+                    ...prevPagination,
+                    pageIndex: value - 1,
+                  }))
+                }
+              />
+            </Box>
+          </Toolbar>
+        ))}
+      />
+    </section>
   );
 };
 

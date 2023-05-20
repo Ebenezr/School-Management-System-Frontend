@@ -54,7 +54,7 @@ const Aside = () => {
         </Sidebar.Items>
       </Sidebar>
       <div className="flex flex-col justify-center w-full px-2 py-4">
-        <div className="flex items-end  pb-4 w-full ">
+        <div className="flex items-end  pb-6 w-full ">
           <Avatar placeholderInitials="EB" rounded={true}>
             <div className="space-y-1 font-medium dark:text-white">
               <div>Jese Leos</div>
