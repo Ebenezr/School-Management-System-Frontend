@@ -189,7 +189,10 @@ const Login = () => {
                 <Checkbox id="remember" />
                 <Label htmlFor="remember">Remember me</Label>
               </div>
-              <Link to="#" className="text-sm text-purple-600 hover:underline">
+              <Link
+                to="dashboard"
+                className="text-sm text-purple-600 hover:underline"
+              >
                 Lost Password?
               </Link>
             </div>
