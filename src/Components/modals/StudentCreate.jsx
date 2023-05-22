@@ -1,11 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Label,
-  Modal,
-  Select,
-  TextInput,
-} from "flowbite-react";
+import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -47,7 +40,7 @@ const StudentCreate = ({ onClose, open }) => {
   const {
     handleSubmit,
     control,
-    setValue,
+
     reset,
     formState: { errors },
   } = useForm({
