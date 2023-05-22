@@ -45,7 +45,7 @@ const Login = () => {
   function saveData(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
-  console.log("baseurl", process.env.REACT_APP_BASE_URL);
+
   const createPost = useMutation(
     (newPost) => axios.post(`${process.env.REACT_APP_BASE_URL}/login`, newPost),
     {

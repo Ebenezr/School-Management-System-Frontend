@@ -18,7 +18,7 @@ const gender = [
   },
 ];
 
-const StudentCreate = ({ onClose, open }) => {
+const StudentUpdate = ({ onClose, open, objData }) => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
   // first_name,last_name,dob,gender
@@ -40,7 +40,6 @@ const StudentCreate = ({ onClose, open }) => {
   const {
     handleSubmit,
     control,
-
     reset,
     formState: { errors },
   } = useForm({
@@ -49,18 +48,16 @@ const StudentCreate = ({ onClose, open }) => {
   });
   const queryClient = useQueryClient();
 
-  // reset form
   useEffect(() => {
     reset({
-      first_name: "",
-      last_name: "",
-      dob: "",
-      classId: 0,
-      gender: "MALE",
+      first_name: objData?.first_name ?? "",
+      last_name: objData?.last_name ?? "",
+      dob: objData?.dob ? new Date(objData.dob) : new Date(),
+      classId: objData?.classId ?? 0,
+      gender: objData?.gender ?? "MALE",
     });
-  }, [reset]);
+  }, [reset, objData]);
 
-  // for dropdown
   const fetchClassList = async () => {
     try {
       const response = await axios.get(
@@ -75,28 +72,34 @@ const StudentCreate = ({ onClose, open }) => {
     cacheTime: 10 * 60 * 1000, // cache for 10 minutes
   });
 
-  const createPost = useMutation(
-    (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/students/post`, newPost),
+  const updatePost = useMutation(
+    (updatedPost) => {
+      const { id, ...postData } = updatedPost;
+      axios.patch(`${process.env.REACT_APP_BASE_URL}/student/${id}`, postData);
+    },
     {
-      onSuccess: (response) => {
-        setShowSuccessToast(true);
-        queryClient.invalidateQueries(["students-data"]);
-      },
-      onError: () => {
-        setShowErrorToast(true);
+      onSettled: (data, error, variables, context) => {
+        if (error) {
+          setShowErrorToast(true);
+        } else {
+          setShowSuccessToast(true);
+          queryClient.invalidateQueries(["students-data"]);
+          reset();
+
+          onClose();
+        }
       },
     }
   );
-  const { isLoading } = createPost;
+  const { isLoading } = updatePost;
   const onSubmit = async (data) => {
     try {
-      createPost.mutate(data);
+      updatePost.mutate(data);
     } catch (error) {
-      console.error(error);
+      setShowErrorToast(true);
     }
   };
-  // reset toast
+
   useEffect(() => {
     let successToastTimer;
     let errorToastTimer;
@@ -290,7 +293,7 @@ const StudentCreate = ({ onClose, open }) => {
                 type="submit"
                 isProcessing={isLoading}
               >
-                Add Student
+                Save Student
               </Button>
             </div>
           </form>
@@ -300,4 +303,4 @@ const StudentCreate = ({ onClose, open }) => {
   );
 };
 
-export default StudentCreate;
+export default StudentUpdate;

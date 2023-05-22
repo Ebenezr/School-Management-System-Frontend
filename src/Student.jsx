@@ -1,30 +1,68 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { HiCheck } from "react-icons/hi";
+import { IoMdClose } from "react-icons/io";
 import MaterialReactTable, {
   MRT_FullScreenToggleButton,
   MRT_GlobalFilterTextField,
   MRT_ShowHideColumnsButton,
+  MRT_TableInstance,
+  MRT_TablePagination,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFiltersButton,
+  MRT_ToolbarAlertBanner,
+  MaterialReactTableProps,
+  MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+  MRT_SortingState,
+  MRT_Row,
+  MRT_Cell,
 } from "material-react-table";
 import { format } from "date-fns";
 
-import { Box, IconButton, Pagination, Toolbar, Tooltip } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Pagination,
+  Toolbar,
+  Tooltip,
+} from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
-import { useQuery } from "@tanstack/react-query";
-import { Button } from "flowbite-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button, Toast } from "flowbite-react";
 import StudentCreate from "./Components/modals/StudentCreate";
+import axios from "axios";
+import StudentUpdate from "./Components/modals/StudentUpdate";
+const KES = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "KES",
+});
 
 const Student = () => {
+  const queryClient = useQueryClient();
   const [columnFilters, setColumnFilters] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const tableInstanceRef = useRef(null);
   const [sorting, setSorting] = useState([]);
-
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [selectedData, setSelectedData] = useState();
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
 
@@ -105,7 +143,7 @@ const Student = () => {
         },
       },
       {
-        accessorKey: "grade",
+        accessorKey: "Class.name",
 
         header: "Class",
       },
@@ -113,17 +151,74 @@ const Student = () => {
         accessorKey: "bal",
 
         header: "Fee Balance",
+        size: 50,
+        Cell: ({ cell }) => {
+          return `${KES.format(cell.getValue() ?? 0)}`;
+        },
       },
     ],
 
     []
   );
 
+  const deletePost = useMutation((id) => {
+    return axios
+      .delete(`${process.env.REACT_APP_BASE_URL}/student/${id}`)
+      .then(() => {
+        queryClient.invalidateQueries(["guest-data"]);
+        setShowSuccessToast(true);
+        refetch();
+      })
+      .catch(() => {
+        setShowErrorToast(true);
+      });
+  });
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [rowToDelete, setRowToDelete] = useState(null);
+  const handleDeleteRow = useCallback((row) => {
+    setOpenConfirmDialog(true);
+    setRowToDelete(row);
+  }, []);
+  // close dialog
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+  const handleConfirmDelete = () => {
+    if (rowToDelete) {
+      deletePost.mutate(rowToDelete.getValue("id"));
+      tableData.splice(rowToDelete.index, 1);
+    }
+    setOpenConfirmDialog(false);
+  };
+
+  // reset toast
+
+  useEffect(() => {
+    let successToastTimer;
+    let errorToastTimer;
+
+    if (showSuccessToast) {
+      successToastTimer = setTimeout(() => {
+        setShowSuccessToast(false);
+      }, 2000);
+    }
+
+    if (showErrorToast) {
+      errorToastTimer = setTimeout(() => {
+        setShowErrorToast(false);
+      }, 2000);
+    }
+
+    return () => {
+      clearTimeout(successToastTimer);
+      clearTimeout(errorToastTimer);
+    };
+  }, [showSuccessToast, showErrorToast]);
+
   //column definitions...
   return (
     <section className="bg-white h-full w-full  p-4">
       <h1 className="mb-4 font-semibold tracking-wide text-lg">Students</h1>
-
       <Box className="border-slate-200 rounded border-[1px] p-4">
         {tableInstanceRef.current && (
           <Toolbar
@@ -148,7 +243,11 @@ const Student = () => {
             })}
           >
             <Box className="gap-3 flex items-center">
-              <Button onClick={() => setCreateModalOpen(true)} color="purple">
+              <Button
+                onClick={() => setCreateModalOpen(true)}
+                outline={true}
+                gradientDuoTone="purpleToBlue"
+              >
                 Add Student
               </Button>
             </Box>
@@ -206,8 +305,8 @@ const Student = () => {
               <Tooltip arrow placement="left" title="Edit">
                 <IconButton
                   onClick={() => {
-                    // setUpdateModalOpen(true);
-                    // setSelectedData(row);
+                    setUpdateModalOpen(true);
+                    setSelectedData(row);
                   }}
                 >
                   <Edit />
@@ -215,10 +314,7 @@ const Student = () => {
               </Tooltip>
 
               <Tooltip arrow placement="right" title="Delete">
-                <IconButton
-                  color="error"
-                  // onClick={() => handleDeleteRow(row)}
-                >
+                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                   <Delete />
                 </IconButton>
               </Tooltip>
@@ -307,6 +403,51 @@ const Student = () => {
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
       />
+      <StudentUpdate
+        open={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        objData={selectedData?.original}
+      />
+      <Dialog
+        open={openConfirmDialog}
+        onClose={handleCloseConfirmDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this guest?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* toast */}
+      {showSuccessToast && (
+        <Toast className="absolute bottom-4 left-4">
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+            <HiCheck className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">Data Updated Success.</div>
+          <Toast.Toggle onClick={() => setShowSuccessToast(false)} />
+        </Toast>
+      )}
+      {showErrorToast && (
+        <Toast className="absolute bottom-4 left-4">
+          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+            <IoMdClose className="h-5 w-5" />
+          </div>
+          <div className="ml-3 text-sm font-normal">Data update failed.</div>
+          <Toast.Toggle onClick={() => setShowErrorToast(false)} />
+        </Toast>
+      )}
     </section>
   );
 };
