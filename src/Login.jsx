@@ -8,7 +8,7 @@ import {
 } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-
+import { HiMail, HiEyeOff, HiEye } from "react-icons/hi";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +16,8 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { HiCheck } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import { HiEye, HiEyeOff } from "react-icons/hi";
+import { Link } from "react-router-dom";
+// import { HiEye, HiEyeOff } from "react-icons/hi";
 const Login = () => {
   const navigate = useNavigate();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -125,7 +126,11 @@ const Login = () => {
           >
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="email1" value="Your email" />
+                <Label
+                  htmlFor="email1"
+                  value="Your email"
+                  color={errors.email ? "failure" : "gray"}
+                />
               </div>
               <Controller
                 control={control}
@@ -135,15 +140,19 @@ const Login = () => {
                   <TextInput
                     id="email1"
                     type="email"
+                    shadow={true}
+                    rightIcon={HiMail}
                     placeholder="name@flowbite.com"
                     required={true}
+                    color={errors.email ? "failure" : "gray"}
+                    helperText={errors.email?.message}
                     {...field}
                   />
                 )}
               />
-              {errors.email && (
+              {/* {errors.email && (
                 <p className="text-red-500">{errors.email.message}</p>
-              )}
+              )} */}
             </div>
             <div>
               <div className="mb-2 block">
@@ -152,6 +161,7 @@ const Login = () => {
               <div className="relative">
                 <Controller
                   control={control}
+                  shadow={true}
                   name="password"
                   defaultValue=""
                   render={({ field }) => (
@@ -159,6 +169,8 @@ const Login = () => {
                       id="password1"
                       type={showPassword ? "text" : "password"}
                       required={true}
+                      color={errors.email ? "failure" : "gray"}
+                      helperText={errors.password?.message}
                       {...field}
                     />
                   )}
@@ -171,13 +183,18 @@ const Login = () => {
                   {showPassword ? <HiEyeOff /> : <HiEye />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-red-500">{errors.password.message}</p>
-              )}
             </div>
-            <div className="flex items-center gap-2">
-              <Checkbox id="remember" />
-              <Label htmlFor="remember">Remember me</Label>
+            <div className="flex justify-between">
+              <div className="flex items-center gap-2">
+                <Checkbox id="remember" />
+                <Label htmlFor="remember">Remember me</Label>
+              </div>
+              <Link
+                to="dashboard"
+                className="text-sm text-purple-600 hover:underline"
+              >
+                Lost Password?
+              </Link>
             </div>
             <Button color="purple" type="submit" isProcessing={isLoading}>
               Submit

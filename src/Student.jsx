@@ -24,10 +24,11 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "flowbite-react";
+import StudentCreate from "./Components/modals/StudentCreate";
 
 const Student = () => {
   const [columnFilters, setColumnFilters] = useState([]);
-
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const tableInstanceRef = useRef(null);
   const [sorting, setSorting] = useState([]);
@@ -129,6 +130,12 @@ const Student = () => {
   return (
     <section className="bg-white h-full w-full  p-4">
       <h1 className="mb-4 font-semibold tracking-wide text-lg">Students</h1>
+      <Button
+        onClick={() => setCreateModalOpen(true)}
+        className="bg-indigo-500"
+      >
+        Add Student
+      </Button>
       <Box className="border-slate-200 rounded border-[1px] p-4">
         {/* Our Custom External Top Toolbar */}
 
@@ -280,6 +287,10 @@ const Student = () => {
             </Box>
           </Toolbar>
         ))}
+      />
+      <StudentCreate
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
       />
     </section>
   );
