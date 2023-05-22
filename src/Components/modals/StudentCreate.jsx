@@ -33,8 +33,10 @@ const StudentCreate = ({ onClose, open }) => {
       }),
     classId: z
       .number()
-      .int({ message: "Please select a class/grade" })
-      .refine((value) => value !== 0, { message: "Please select a Class" }),
+      .int({ message: "Please select a class/Grade" })
+      .refine((value) => value !== 0, {
+        message: "Please select a Class/Grade",
+      }),
   });
 
   const {
@@ -74,6 +76,7 @@ const StudentCreate = ({ onClose, open }) => {
   const { data: classList } = useQuery(["class-data"], fetchClassList, {
     cacheTime: 10 * 60 * 1000, // cache for 10 minutes
   });
+  console.log(classList);
 
   const createPost = useMutation(
     (newPost) =>
@@ -130,7 +133,11 @@ const StudentCreate = ({ onClose, open }) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="first_name" value="First Name" />
+                <Label
+                  htmlFor="first_name"
+                  value="First Name"
+                  color={errors.first_name ? "failure" : "gray"}
+                />
               </div>
               <Controller
                 control={control}
@@ -150,7 +157,11 @@ const StudentCreate = ({ onClose, open }) => {
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="last_name" value="Last Name" />
+                <Label
+                  htmlFor="last_name"
+                  value="Last Name"
+                  color={errors.last_name ? "failure" : "gray"}
+                />
               </div>
               <Controller
                 control={control}
@@ -209,7 +220,11 @@ const StudentCreate = ({ onClose, open }) => {
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="gender" value="Gender" />
+                <Label
+                  htmlFor="gender"
+                  value="Gender"
+                  color={`${errors.gender ? "failure" : "gray"}`}
+                />
               </div>
               <Controller
                 control={control}
@@ -220,8 +235,9 @@ const StudentCreate = ({ onClose, open }) => {
                     <Select
                       id="gender"
                       value={field.value}
-                      className={`input ${errors.gender ? "failure" : "gray"}`}
+                      color={`${errors.gender ? "failure" : "gray"}`}
                       {...field}
+                      helperText={errors.gender?.message}
                       required={true}
                     >
                       <option value="" disabled>
@@ -245,39 +261,41 @@ const StudentCreate = ({ onClose, open }) => {
             {/* select class */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="class" value="Class/Grade" />
+                <Label
+                  htmlFor="classId"
+                  value="Class / Grade"
+                  color={`${errors.classId ? "failure" : "gray"}`}
+                />
               </div>
               <Controller
                 control={control}
                 name="classId"
-                defaultValue=""
+                defaultValue={0}
                 render={({ field }) => (
                   <div>
                     <Select
                       id="classId"
-                      value={classList?.find((c) => c.id === field.value)}
-                      className={`input ${errors.classId ? "failure" : "gray"}`}
+                      type="number"
+                      value={field.value}
+                      color={`${errors.classId ? "failure" : "gray"}`}
                       required={true}
+                      helperText={errors.classId?.message}
                       {...field}
-                      options={classList || []}
-                      onChange={(_, value) => {
-                        field.onChange(value);
-                      }}
                     >
-                      <option value="" disabled>
+                      <option value={0} disabled>
                         Select class
                       </option>
                       {classList?.map((option) => (
-                        <option key={option.id} value={option.id}>
+                        <option key={option.id} value={Number(option.id)}>
                           {option.name}
                         </option>
                       ))}
                     </Select>
-                    {errors.classId && (
+                    {/* {errors.classId && (
                       <span className="text-failure">
                         {errors.classId.message}
                       </span>
-                    )}
+                    )} */}
                   </div>
                 )}
               />
