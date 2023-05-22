@@ -12,7 +12,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
+import ReactDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const gender = [
   {
     name: "MALE",
@@ -97,7 +98,7 @@ const StudentCreate = ({ onClose, open }) => {
     <Modal show={open} size="md" popup={true} onClose={onClose}>
       <Modal.Header />
       <Modal.Body>
-        <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
+        <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8 relative z-0">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
             Add New Student
           </h3>
@@ -142,24 +143,45 @@ const StudentCreate = ({ onClose, open }) => {
                 )}
               />
             </div>
-            {/* <div>
+            <div>
               <div className="mb-2 block">
                 <Label htmlFor="dob" value="Date of Birth" />
               </div>
-              <Controller
-                control={control}
-                name="dob"
-                render={({ field }) => (
-                  <DatePicker
-                    id="dob"
-                    placeholder="Select date of birth"
-                    required={true}
-                    onChange={(date) => field.onChange(date)}
-                    value={field.value}
-                  />
-                )}
-              />
-            </div> */}
+
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <Controller
+                  control={control}
+                  name="dob"
+                  render={({ field }) => (
+                    <ReactDatePicker
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      dateFormat="yyyy-MM-dd"
+                      appearance="default"
+                      id="dob"
+                      placeholderText="Select date of birth"
+                      required={true}
+                      onChange={(date) => field.onChange(date)}
+                      selected={field.value}
+                    />
+                  )}
+                />
+              </div>
+            </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="gender" value="Gender" />
@@ -195,8 +217,13 @@ const StudentCreate = ({ onClose, open }) => {
               />
             </div>
 
-            <div className="w-full mt-3">
-              <Button color="purple" type="submit" isProcessing={isLoading}>
+            <div className="w-full mt-3 flex items-end">
+              <Button
+                className="ml-auto"
+                color="purple"
+                type="submit"
+                isProcessing={isLoading}
+              >
                 Add Student
               </Button>
             </div>
