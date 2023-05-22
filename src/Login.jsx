@@ -45,8 +45,9 @@ const Login = () => {
   function saveData(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
+  console.log("baseurl", process.env.REACT_APP_BASE_URL);
   const createPost = useMutation(
-    (newPost) => axios.post(`${process.env.BASE_URL}/login`, newPost),
+    (newPost) => axios.post(`${process.env.REACT_APP_BASE_URL}/login`, newPost),
     {
       // You can handle side effects in onSuccess and onError
       onSuccess: (response) => {

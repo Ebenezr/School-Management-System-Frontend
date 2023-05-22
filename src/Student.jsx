@@ -1,22 +1,13 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import MaterialReactTable, {
   MRT_FullScreenToggleButton,
   MRT_GlobalFilterTextField,
   MRT_ShowHideColumnsButton,
-  MRT_TableInstance,
-  MRT_TablePagination,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFiltersButton,
-  MRT_ToolbarAlertBanner,
-  MaterialReactTableProps,
-  MRT_ColumnDef,
-  MRT_ColumnFiltersState,
-  MRT_PaginationState,
-  MRT_SortingState,
-  MRT_Row,
-  MRT_Cell,
 } from "material-react-table";
+import { format } from "date-fns";
 
 import { Box, IconButton, Pagination, Toolbar, Tooltip } from "@mui/material";
 
@@ -29,6 +20,7 @@ import StudentCreate from "./Components/modals/StudentCreate";
 const Student = () => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [tableData, setTableData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const tableInstanceRef = useRef(null);
   const [sorting, setSorting] = useState([]);
@@ -55,13 +47,7 @@ const Student = () => {
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(
-        "/api/data",
-
-        process.env.NODE_ENV === "production"
-          ? "https://www.material-react-table.com"
-          : "http://localhost:3000"
-      );
+      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/students`);
 
       fetchURL.searchParams.set(
         "start",
@@ -86,6 +72,9 @@ const Student = () => {
 
     keepPreviousData: true,
   });
+  useEffect(() => {
+    data && setTableData(data.items);
+  }, [data]);
 
   const columns = useMemo(
     () => [
@@ -95,13 +84,13 @@ const Student = () => {
         header: "Id",
       },
       {
-        accessorKey: "firstName",
+        accessorKey: "first_name",
 
         header: "First Name",
       },
 
       {
-        accessorKey: "lastName",
+        accessorKey: "last_name",
 
         header: "Last Name",
       },
@@ -110,6 +99,10 @@ const Student = () => {
         accessorKey: "dob",
 
         header: "DOB",
+        Cell: ({ cell }) => {
+          const dateTime = cell.getValue?.();
+          return dateTime ? format(new Date(dateTime), "yyyy-MM-dd") : "";
+        },
       },
       {
         accessorKey: "grade",
@@ -130,15 +123,8 @@ const Student = () => {
   return (
     <section className="bg-white h-full w-full  p-4">
       <h1 className="mb-4 font-semibold tracking-wide text-lg">Students</h1>
-      <Button
-        onClick={() => setCreateModalOpen(true)}
-        className="bg-indigo-500"
-      >
-        Add Student
-      </Button>
-      <Box className="border-slate-200 rounded border-[1px] p-4">
-        {/* Our Custom External Top Toolbar */}
 
+      <Box className="border-slate-200 rounded border-[1px] p-4">
         {tableInstanceRef.current && (
           <Toolbar
             sx={(theme) => ({
@@ -161,12 +147,8 @@ const Student = () => {
               p: "1.5rem 0",
             })}
           >
-            <Box>
-              <Button
-                className="bg-indigo-500"
-                color="purple"
-                // onClick={() => setCreateModalOpen(true)}
-              >
+            <Box className="gap-3 flex items-center">
+              <Button onClick={() => setCreateModalOpen(true)} color="purple">
                 Add Student
               </Button>
             </Box>
@@ -184,81 +166,114 @@ const Student = () => {
             </Box>
           </Toolbar>
         )}
-      </Box>
-      <MaterialReactTable
-        columns={columns}
-        data={data?.data ?? []} //data is undefined on first render
-        initialState={{
-          showGlobalFilter: true,
-          showColumnFilters: false,
-        }}
-        enableTopToolbar={false}
-        enableRowActions
-        manualFiltering
-        manualPagination
-        manualSorting
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: "error",
 
-                children: "Error loading data",
-              }
-            : undefined
-        }
-        onColumnFiltersChange={setColumnFilters}
-        onGlobalFilterChange={setGlobalFilter}
-        onPaginationChange={setPagination}
-        onSortingChange={setSorting}
-        renderBottomToolbarCustomActions={() => (
-          <>
-            <Tooltip arrow title="Refresh Data">
-              <IconButton onClick={() => refetch()}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        )}
-        renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Tooltip arrow placement="left" title="Edit">
-              <IconButton
-                onClick={() => {
-                  // setUpdateModalOpen(true);
-                  // setSelectedData(row);
-                }}
+        <MaterialReactTable
+          columns={columns}
+          data={tableData ?? []}
+          initialState={{
+            showGlobalFilter: true,
+            showColumnFilters: false,
+          }}
+          enableTopToolbar={false}
+          enableRowActions
+          manualFiltering
+          manualPagination
+          manualSorting
+          muiToolbarAlertBannerProps={
+            isError
+              ? {
+                  color: "error",
+
+                  children: "Error loading data",
+                }
+              : undefined
+          }
+          onColumnFiltersChange={setColumnFilters}
+          onGlobalFilterChange={setGlobalFilter}
+          onPaginationChange={setPagination}
+          onSortingChange={setSorting}
+          renderBottomToolbarCustomActions={() => (
+            <>
+              <Tooltip arrow title="Refresh Data">
+                <IconButton onClick={() => refetch()}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          renderRowActions={({ row, table }) => (
+            <Box sx={{ display: "flex", gap: "1rem" }}>
+              <Tooltip arrow placement="left" title="Edit">
+                <IconButton
+                  onClick={() => {
+                    // setUpdateModalOpen(true);
+                    // setSelectedData(row);
+                  }}
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip arrow placement="right" title="Delete">
+                <IconButton
+                  color="error"
+                  // onClick={() => handleDeleteRow(row)}
+                >
+                  <Delete />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
+          rowCount={data?.itemsPerPage ?? 0}
+          tableInstanceRef={tableInstanceRef}
+          state={{
+            columnFilters,
+
+            globalFilter,
+
+            isLoading,
+
+            pagination,
+
+            showAlertBanner: isError,
+
+            showProgressBars: isFetching,
+
+            sorting,
+          }}
+          {...(tableInstanceRef.current && (
+            <Toolbar
+              sx={{
+                display: "flex",
+
+                justifyContent: "center",
+
+                flexDirection: "column",
+              }}
+            >
+              <Box
+                className="place-items-center"
+                sx={{ display: "grid", width: "100%" }}
               >
-                <Edit />
-              </IconButton>
-            </Tooltip>
+                <Pagination
+                  variant="outlined"
+                  shape="rounded"
+                  count={data?.totalPages ?? 0}
+                  page={pagination.pageIndex + 1}
+                  onChange={(event, value) =>
+                    setPagination((prevPagination) => ({
+                      ...prevPagination,
+                      pageIndex: value - 1,
+                    }))
+                  }
+                />
+              </Box>
+            </Toolbar>
+          ))}
+        />
+        {/* Custom Bottom Toolbar */}
 
-            <Tooltip arrow placement="right" title="Delete">
-              <IconButton
-                color="error"
-                // onClick={() => handleDeleteRow(row)}
-              >
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
-        rowCount={data?.meta?.totalRowCount ?? 0}
-        state={{
-          columnFilters,
-
-          globalFilter,
-
-          isLoading,
-
-          pagination,
-
-          showAlertBanner: isError,
-
-          showProgressBars: isFetching,
-
-          sorting,
-        }}
-        {...(tableInstanceRef.current && (
+        {tableInstanceRef.current && (
           <Toolbar
             sx={{
               display: "flex",
@@ -286,8 +301,8 @@ const Student = () => {
               />
             </Box>
           </Toolbar>
-        ))}
-      />
+        )}
+      </Box>
       <StudentCreate
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}

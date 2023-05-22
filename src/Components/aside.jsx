@@ -1,5 +1,5 @@
 import { Avatar, Button, Sidebar } from "flowbite-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import stud from "./svg/stud";
 import dash from "./svg/dash";
@@ -12,8 +12,42 @@ import classicon from "./svg/classicon";
 import teachericon from "./svg/teachericon";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
+import { useIsAuthenticated } from "../utils/hooks/localstorage";
 const Aside = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, expiresAt, name, role } = useIsAuthenticated();
+
+  const initials = name
+    ?.split(" ")
+    .map((namePart) => namePart.charAt(0))
+    .join("");
+
+  useEffect(() => {
+    let sessionTimeout;
+
+    if (isAuthenticated && expiresAt) {
+      // Calculate the remaining time until session timeout
+      const remainingTime = expiresAt - Date.now();
+      // logout the user if the remaining time is less than 10 seconds
+      if (remainingTime < 10000) {
+        localStorage.removeItem("authObject");
+        navigate("/");
+      }
+    }
+
+    // Cleanup function to clear session timeout when component unmounts
+    return () => {
+      clearTimeout(sessionTimeout);
+    };
+  }, [isAuthenticated, navigate, expiresAt]);
+
+  function signOutUser() {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("authObject");
+    }
+    navigate("/");
+  }
+
   return (
     <div className="w-fit h-screen flex flex-col">
       <Sidebar aria-label="Sidebar Menu">
@@ -55,11 +89,11 @@ const Aside = () => {
       </Sidebar>
       <div className="flex flex-col justify-center w-full px-2 py-4">
         <div className="flex items-end  pb-6 w-full ">
-          <Avatar placeholderInitials="EB" rounded={true}>
+          <Avatar placeholderInitials={initials} rounded={true}>
             <div className="space-y-1 font-medium dark:text-white">
-              <div>Jese Leos</div>
+              <div>{name}</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
-                ADMIN
+                {role}
               </div>
             </div>
           </Avatar>
@@ -68,9 +102,7 @@ const Aside = () => {
           <Button
             className="mx-auto w-full"
             color="purple"
-            onClick={() => {
-              navigate("/");
-            }}
+            onClick={signOutUser}
           >
             Sign out
             <CiLogout className="ml-2 h-5 w-5" />
