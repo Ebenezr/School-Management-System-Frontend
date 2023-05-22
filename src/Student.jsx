@@ -46,6 +46,10 @@ import { Button, Toast } from "flowbite-react";
 import StudentCreate from "./Components/modals/StudentCreate";
 import axios from "axios";
 import StudentUpdate from "./Components/modals/Student Update";
+const KES = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "KES",
+});
 
 const Student = () => {
   const queryClient = useQueryClient();
@@ -139,7 +143,7 @@ const Student = () => {
         },
       },
       {
-        accessorKey: "grade",
+        accessorKey: "Class.name",
 
         header: "Class",
       },
@@ -147,6 +151,10 @@ const Student = () => {
         accessorKey: "bal",
 
         header: "Fee Balance",
+        size: 50,
+        Cell: ({ cell }) => {
+          return `${KES.format(cell.getValue() ?? 0)}`;
+        },
       },
     ],
 
