@@ -45,7 +45,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Toast } from "flowbite-react";
 import StudentCreate from "./Components/modals/StudentCreate";
 import axios from "axios";
-import StudentUpdate from "./Components/modals/Student Update";
+import StudentUpdate from "./Components/modals/StudentUpdate";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",

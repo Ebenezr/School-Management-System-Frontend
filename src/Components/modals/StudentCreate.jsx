@@ -49,6 +49,7 @@ const StudentCreate = ({ onClose, open }) => {
   });
   const queryClient = useQueryClient();
 
+  // reset form
   useEffect(() => {
     reset({
       first_name: "",
@@ -59,6 +60,7 @@ const StudentCreate = ({ onClose, open }) => {
     });
   }, [reset]);
 
+  // for dropdown
   const fetchClassList = async () => {
     try {
       const response = await axios.get(
@@ -94,7 +96,7 @@ const StudentCreate = ({ onClose, open }) => {
       console.error(error);
     }
   };
-
+  // reset toast
   useEffect(() => {
     let successToastTimer;
     let errorToastTimer;
