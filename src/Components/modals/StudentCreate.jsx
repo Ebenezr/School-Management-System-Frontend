@@ -1,4 +1,11 @@
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import {
+  Button,
+  Checkbox,
+  Label,
+  Modal,
+  Select,
+  TextInput,
+} from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -17,7 +24,7 @@ const gender = [
   },
 ];
 
-const StudentCreate = ({ onClose }) => {
+const StudentCreate = ({ onClose, open }) => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
   // first_name,last_name,dob,gender
@@ -87,7 +94,7 @@ const StudentCreate = ({ onClose }) => {
   }, [showSuccessToast, showErrorToast]);
 
   return (
-    <Modal show={false} size="md" popup={true} onClose={onClose}>
+    <Modal show={open} size="md" popup={true} onClose={onClose}>
       <Modal.Header />
       <Modal.Body>
         <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
@@ -163,10 +170,11 @@ const StudentCreate = ({ onClose }) => {
                 defaultValue=""
                 render={({ field }) => (
                   <div>
-                    <select
+                    <Select
                       id="gender"
                       className={`input ${errors.gender ? "failure" : "gray"}`}
                       {...field}
+                      required={true}
                     >
                       <option value="" disabled>
                         Select gender
@@ -176,7 +184,7 @@ const StudentCreate = ({ onClose }) => {
                           {option.name}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                     {errors.gender && (
                       <span className="text-failure">
                         {errors.gender.message}
@@ -187,7 +195,7 @@ const StudentCreate = ({ onClose }) => {
               />
             </div>
 
-            <div className="w-full">
+            <div className="w-full mt-3">
               <Button color="purple" type="submit" isProcessing={isLoading}>
                 Add Student
               </Button>
