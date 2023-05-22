@@ -55,13 +55,7 @@ const Student = () => {
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(
-        "/api/data",
-
-        process.env.NODE_ENV === "production"
-          ? "https://www.material-react-table.com"
-          : "http://localhost:3000"
-      );
+      const fetchURL = new URL(`${process.env.REACT_APP_BASE - URL}/students`);
 
       fetchURL.searchParams.set(
         "start",
