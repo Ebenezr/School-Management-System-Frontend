@@ -11,5 +11,8 @@
     "**/.settings": true,
     "**/.factorypath": true
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "githubPullRequests.ignoredPullRequestBranches": [
+    "main"
+  ]
 }

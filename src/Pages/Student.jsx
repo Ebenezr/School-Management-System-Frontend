@@ -61,7 +61,7 @@ const Student = () => {
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: [
-      "student-data",
+      "students-data",
 
       columnFilters, //refetch when columnFilters changes
 

@@ -33,12 +33,7 @@ const StudentCreate = ({
       .refine((value) => value === "MALE" || value === "FEMALE", {
         message: "Gender must be FEMALE' or 'MALE'",
       }),
-    classId: z
-      .number()
-      .int({ message: "Please select a class/Grade" })
-      .refine((value) => value !== 0, {
-        message: "Please select a Class/Grade",
-      }),
+    classId: z.string().min(1, { message: "Class is required" }),
   });
 
   const {
@@ -94,7 +89,11 @@ const StudentCreate = ({
   const { isLoading } = createPost;
   const onSubmit = async (data) => {
     try {
-      createPost.mutate(data);
+      const requestData = {
+        ...data,
+        classId: Number(data.classId), // Convert the value to a number
+      };
+      createPost.mutate(requestData);
     } catch (error) {
       console.error(error);
     }
@@ -264,7 +263,7 @@ const StudentCreate = ({
                         Select class
                       </option>
                       {classList?.map((option) => (
-                        <option key={option.id} value={Number(option.id)}>
+                        <option key={option.id} value={option.id}>
                           {option.name}
                         </option>
                       ))}

@@ -35,10 +35,7 @@ const StudentUpdate = ({
       .refine((value) => value === "MALE" || value === "FEMALE", {
         message: "Gender must be FEMALE' or 'MALE'",
       }),
-    classId: z
-      .number()
-      .int({ message: "Please select a class/grade" })
-      .refine((value) => value !== 0, { message: "Please select a Class" }),
+    classId: z.string().min(1, { message: "Class is required" }),
   });
 
   const {
@@ -98,7 +95,11 @@ const StudentUpdate = ({
   const { isLoading } = updatePost;
   const onSubmit = async (data) => {
     try {
-      updatePost.mutate(data);
+      const requestData = {
+        ...data,
+        classId: Number(data.classId), // Convert the value to a number
+      };
+      updatePost.mutate(requestData);
     } catch (error) {
       setShowErrorToast(true);
     }
