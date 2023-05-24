@@ -33,7 +33,7 @@ const StudentCreate = ({
       .refine((value) => value === "MALE" || value === "FEMALE", {
         message: "Gender must be FEMALE' or 'MALE'",
       }),
-    classId: z.string().min(1, { message: "Class is required" }),
+    // classId: z.string().min(1, { message: "Class is required" }),
   });
 
   const {
@@ -80,6 +80,9 @@ const StudentCreate = ({
       onSuccess: () => {
         setShowSuccessToast(true);
         queryClient.invalidateQueries(["students-data"]);
+        reset();
+
+        onClose();
       },
       onError: () => {
         setShowErrorToast(true);

@@ -27,6 +27,7 @@ const StudentUpdate = ({
 }) => {
   // first_name,last_name,dob,gender
   const FormSchema = z.object({
+    id: z.number().optional(),
     first_name: z.string().min(2, { message: "First name is required" }),
     last_name: z.string().min(2, { message: "Last name is required" }),
     dob: z.date(),
@@ -35,7 +36,7 @@ const StudentUpdate = ({
       .refine((value) => value === "MALE" || value === "FEMALE", {
         message: "Gender must be FEMALE' or 'MALE'",
       }),
-    classId: z.string().min(1, { message: "Class is required" }),
+    // classId: z.string().min(1, { message: "Class is required" }),
   });
 
   const {
@@ -49,8 +50,10 @@ const StudentUpdate = ({
   });
   const queryClient = useQueryClient();
 
+  console.log(objData);
   useEffect(() => {
     reset({
+      id: objData?.id ?? 0,
       first_name: objData?.first_name ?? "",
       last_name: objData?.last_name ?? "",
       dob: objData?.dob ? new Date(objData.dob) : new Date(),
@@ -114,6 +117,29 @@ const StudentUpdate = ({
             Update Student
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <Label
+                htmlFor="id"
+                value="ID"
+                color={`${errors.id ? "failure" : "gray"}`}
+              />
+              <Controller
+                control={control}
+                name="id"
+                defaultValue={objData?.id ?? 0}
+                render={({ field }) => (
+                  <TextInput
+                    id="id"
+                    placeholder="ID"
+                    required={true}
+                    color={`${errors.id ? "failure" : "gray"}`}
+                    helperText={errors.id?.message}
+                    {...field}
+                    disabled={true}
+                  />
+                )}
+              />
+            </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="first_name" value="First Name" />
@@ -236,21 +262,19 @@ const StudentUpdate = ({
               <Controller
                 control={control}
                 name="classId"
-                defaultValue=""
+                defaultValue={0}
                 render={({ field }) => (
                   <div>
                     <Select
                       id="classId"
-                      value={classList?.find((c) => c.id === field.value)}
-                      className={`input ${errors.classId ? "failure" : "gray"}`}
+                      // type="number"
+                      value={field.value}
+                      color={`${errors.classId ? "failure" : "gray"}`}
                       required={true}
+                      helperText={errors.classId?.message}
                       {...field}
-                      options={classList || []}
-                      onChange={(_, value) => {
-                        field.onChange(value);
-                      }}
                     >
-                      <option value="" disabled>
+                      <option value={0} disabled>
                         Select class
                       </option>
                       {classList?.map((option) => (
@@ -259,11 +283,6 @@ const StudentUpdate = ({
                         </option>
                       ))}
                     </Select>
-                    {errors.classId && (
-                      <span className="text-failure">
-                        {errors.classId.message}
-                      </span>
-                    )}
                   </div>
                 )}
               />
