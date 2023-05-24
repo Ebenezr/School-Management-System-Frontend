@@ -1,45 +1,25 @@
-import {
-  Button,
-  Checkbox,
-  Label,
-  Modal,
-  Select,
-  TextInput,
-} from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { HiEyeOff, HiEye } from "react-icons/hi";
 import "react-datepicker/dist/react-datepicker.css";
-const roles = [
-  {
-    name: "ADMIN",
-    value: "ADMIN",
-  },
-  {
-    name: "USER",
-    value: "USER",
-  },
-];
 
-const TeacherCreate = ({ onClose, open }) => {
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showErrorToast, setShowErrorToast] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+const TeacherCreate = ({
+  onClose,
+  open,
+  setShowErrorToast,
+  setShowSuccessToast,
+}) => {
   // first_name,last_name,dob,
   const FormSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    password: z.string().min(1, { message: "Password is required" }),
-    email: z.string().email({ message: "Invalid email address" }),
-    role: z
-      .enum(["ADMIN", "USER"])
-      .refine((value) => value === "ADMIN" || value === "USER", {
-        message: "Role must be 'ADMIN' or 'USER'",
-      }),
-    activeStatus: z.boolean(),
+    first_name: z.string().min(2, { message: "First name is required" }),
+    last_name: z.string().min(2, { message: "Last name is required" }),
+    phone: z
+      .string()
+      .regex(/^(\+?\d{2,3})?0?\d{9}$/, { message: "Invalid phone number" }),
   });
 
   const {
@@ -56,22 +36,19 @@ const TeacherCreate = ({ onClose, open }) => {
   // reset form
   useEffect(() => {
     reset({
-      name: "",
-      email: "",
-      password: "",
-      role: "USER",
-
-      activeStatus: false,
+      first_name: "",
+      last_name: "",
+      phone: "",
     });
   }, [reset]);
 
   const createPost = useMutation(
     (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/users/post`, newPost),
+      axios.post(`${process.env.REACT_APP_BASE_URL}/teacher/post`, newPost),
     {
       onSuccess: () => {
         setShowSuccessToast(true);
-        queryClient.invalidateQueries(["users-data"]);
+        queryClient.invalidateQueries(["teachers-data"]);
         onClose();
       },
       onError: () => {
@@ -87,28 +64,6 @@ const TeacherCreate = ({ onClose, open }) => {
       console.error(error);
     }
   };
-  // reset toast
-  useEffect(() => {
-    let successToastTimer;
-    let errorToastTimer;
-
-    if (showSuccessToast) {
-      successToastTimer = setTimeout(() => {
-        setShowSuccessToast(false);
-      }, 2000);
-    }
-
-    if (showErrorToast) {
-      errorToastTimer = setTimeout(() => {
-        setShowErrorToast(false);
-      }, 2000);
-    }
-
-    return () => {
-      clearTimeout(successToastTimer);
-      clearTimeout(errorToastTimer);
-    };
-  }, [showSuccessToast, showErrorToast]);
 
   return (
     <Modal show={open} size="md" popup={true} onClose={onClose}>
@@ -122,22 +77,22 @@ const TeacherCreate = ({ onClose, open }) => {
             <div>
               <div className="mb-2 block">
                 <Label
-                  htmlFor="name"
-                  value="Full Name"
-                  color={errors.name ? "failure" : "gray"}
+                  htmlFor="first_name"
+                  value="First Name"
+                  color={errors.first_name ? "failure" : "gray"}
                 />
               </div>
               <Controller
                 control={control}
-                name="name"
+                name="first_name"
                 defaultValue=""
                 render={({ field }) => (
                   <TextInput
-                    id="name"
-                    placeholder="John Doe"
+                    id="first_name"
+                    placeholder="First name"
                     required={true}
-                    color={errors.name ? "failure" : "gray"}
-                    helperText={errors.name?.message}
+                    color={errors.first_name ? "failure" : "gray"}
+                    helperText={errors.first_name?.message}
                     {...field}
                   />
                 )}
@@ -146,22 +101,22 @@ const TeacherCreate = ({ onClose, open }) => {
             <div>
               <div className="mb-2 block">
                 <Label
-                  htmlFor="email"
-                  value="Email"
-                  color={errors.email ? "failure" : "gray"}
+                  htmlFor="last_name"
+                  value="Last Name"
+                  color={errors.last_name ? "failure" : "gray"}
                 />
               </div>
               <Controller
                 control={control}
-                name="email"
+                name="last_name"
                 defaultValue=""
                 render={({ field }) => (
                   <TextInput
-                    id="email"
-                    placeholder="name@mail.com"
+                    id="last_name"
+                    placeholder="Last name"
                     required={true}
-                    color={errors.email ? "failure" : "gray"}
-                    helperText={errors.email?.message}
+                    color={errors.last_name ? "failure" : "gray"}
+                    helperText={errors.last_name?.message}
                     {...field}
                   />
                 )}
@@ -169,84 +124,27 @@ const TeacherCreate = ({ onClose, open }) => {
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="password1" value="Your password" />
-              </div>
-              <div className="relative">
-                <Controller
-                  control={control}
-                  shadow={true}
-                  name="password"
-                  defaultValue=""
-                  render={({ field }) => (
-                    <TextInput
-                      id="password1"
-                      type={showPassword ? "text" : "password"}
-                      required={true}
-                      color={errors.email ? "failure" : "gray"}
-                      helperText={errors.password?.message}
-                      {...field}
-                    />
-                  )}
-                />
-                <button
-                  type="button"
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <HiEyeOff /> : <HiEye />}
-                </button>
-              </div>
-            </div>
-            <div>
-              <div className="mb-2 block">
                 <Label
-                  htmlFor="role"
-                  value="Role"
-                  color={`${errors.role ? "failure" : "gray"}`}
+                  htmlFor="phone"
+                  value="Phone"
+                  color={errors.phone ? "failure" : "gray"}
                 />
               </div>
               <Controller
                 control={control}
-                name="role"
+                name="phone"
                 defaultValue=""
                 render={({ field }) => (
-                  <div>
-                    <Select
-                      id="role"
-                      value={field.value}
-                      color={`${errors.role ? "failure" : "gray"}`}
-                      {...field}
-                      helperText={errors.role?.message}
-                      required={true}
-                    >
-                      <option value="" disabled>
-                        Select Role
-                      </option>
-                      {roles?.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
+                  <TextInput
+                    id="phone"
+                    placeholder="0700000000"
+                    required={true}
+                    color={errors.phone ? "failure" : "gray"}
+                    helperText={errors.phone?.message}
+                    {...field}
+                  />
                 )}
               />
-
-              <div className="mt-4 flex items-center gap-2">
-                <Controller
-                  control={control}
-                  name="activeStatus"
-                  defaultValue={false}
-                  render={({ field }) => (
-                    <Checkbox id="activeStatus" label="Can Login" {...field} />
-                  )}
-                />
-                <Label
-                  htmlFor="activeStatus"
-                  value="Can Login"
-                  color={`${errors.activeStatus ? "failure" : "gray"}`}
-                />
-              </div>
             </div>
 
             <div className="w-full mt-3 flex items-end">
@@ -256,7 +154,7 @@ const TeacherCreate = ({ onClose, open }) => {
                 type="submit"
                 isProcessing={isLoading}
               >
-                Add Student
+                Add Teacher
               </Button>
             </div>
           </form>

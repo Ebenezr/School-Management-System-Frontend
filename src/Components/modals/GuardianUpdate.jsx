@@ -79,8 +79,6 @@ const GuardianUpdate = ({
             Update Guardian
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* id
-             */}
             <div>
               <Label
                 htmlFor="id"

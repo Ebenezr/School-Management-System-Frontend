@@ -56,7 +56,7 @@ const Teacher = () => {
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: [
-      "users-data",
+      "teachers-data",
 
       columnFilters, //refetch when columnFilters changes
 
@@ -70,7 +70,7 @@ const Teacher = () => {
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/users`);
+      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/teachers`);
 
       fetchURL.searchParams.set(
         "start",
@@ -107,37 +107,21 @@ const Teacher = () => {
         header: "Id",
       },
       {
-        accessorKey: "name",
+        accessorKey: "first_name",
 
-        header: "Name",
+        header: "First Name",
       },
 
       {
-        accessorKey: "email",
+        accessorKey: "last_name",
 
-        header: "Email",
+        header: "Last Name",
       },
 
       {
-        accessorKey: "role",
+        accessorKey: "phone",
 
-        header: "Role",
-      },
-      {
-        accessorKey: "activeStatus",
-
-        header: "Status",
-        Cell: ({ cell }) => {
-          return cell.getValue() ? (
-            <span className="bg-green-100 tracking-wide px-3 py-2 rounded-full text-green-900 mx-auto">
-              Active
-            </span>
-          ) : (
-            <span className="bg-red-100 tracking-wide px-3 py-2 rounded-full text-red-900 mx-auto">
-              Out Of Office
-            </span>
-          );
-        },
+        header: "Phone",
       },
     ],
 
@@ -146,9 +130,9 @@ const Teacher = () => {
 
   const deletePost = useMutation((id) => {
     return axios
-      .delete(`${process.env.REACT_APP_BASE_URL}/user/${id}`)
+      .delete(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`)
       .then(() => {
-        queryClient.invalidateQueries(["user-data"]);
+        queryClient.invalidateQueries(["teachers-data"]);
         setShowSuccessToast(true);
         refetch();
       })

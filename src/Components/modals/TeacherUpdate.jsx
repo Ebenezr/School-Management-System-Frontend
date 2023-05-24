@@ -17,15 +17,11 @@ const TeacherUpdate = ({
 }) => {
   const FormSchema = z.object({
     id: z.number().optional(),
-    name: z.string().min(1, { message: "Name is required" }),
-    email: z.string().email({ message: "Invalid email address" }),
-    role: z
-      .enum(["ADMIN", "USER"])
-      .refine((value) => value === "ADMIN" || value === "USER", {
-        message: "Role must be 'ADMIN' or 'USER'",
-      }),
-
-    activeStatus: z.boolean(),
+    first_name: z.string().min(2, { message: "First name is required" }),
+    last_name: z.string().min(2, { message: "Last name is required" }),
+    phone: z
+      .string()
+      .regex(/^(\+?\d{2,3})?0?\d{9}$/, { message: "Invalid phone number" }),
   });
 
   const {
@@ -43,17 +39,16 @@ const TeacherUpdate = ({
   useEffect(() => {
     reset({
       id: objData?.id ?? 0,
-      name: objData?.name ?? "",
-      email: objData?.email ?? "",
-      role: objData?.role ?? "USER",
-      activeStatus: objData?.activeStatus ?? false,
+      first_name: objData?.first_name ?? "",
+      last_name: objData?.last_name ?? "",
+      phone: objData?.phone ?? "",
     });
   }, [reset, objData]);
 
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/user/${id}`, postData);
+      axios.patch(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`, postData);
     },
     {
       onSettled: (error) => {
@@ -61,7 +56,7 @@ const TeacherUpdate = ({
           setShowErrorToast(true);
         } else {
           setShowSuccessToast(true);
-          queryClient.invalidateQueries(["users-data"]);
+          queryClient.invalidateQueries(["teachers-data"]);
           reset();
           onClose();
         }
@@ -83,7 +78,7 @@ const TeacherUpdate = ({
       <Modal.Body>
         <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8 relative z-0">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-            Update User
+            Update Teacher
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
@@ -159,6 +154,14 @@ const TeacherUpdate = ({
             </div>
 
             <div>
+              <div className="mb-2 block">
+                <Label
+                  htmlFor="role"
+                  value="Role"
+                  color={`${errors.role ? "failure" : "gray"}`}
+                />
+              </div>
+
               <div className="mt-4 flex items-center gap-2">
                 <Controller
                   control={control}
@@ -188,7 +191,7 @@ const TeacherUpdate = ({
                 type="submit"
                 isProcessing={isLoading}
               >
-                Save User
+                Save Teacher
               </Button>
             </div>
           </form>

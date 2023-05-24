@@ -153,7 +153,7 @@ const GuardianCreate = ({
                 type="submit"
                 isProcessing={isLoading}
               >
-                Add Student
+                Add Guardian
               </Button>
             </div>
           </form>
