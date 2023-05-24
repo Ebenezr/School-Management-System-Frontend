@@ -1,11 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Label,
-  Modal,
-  Select,
-  TextInput,
-} from "flowbite-react";
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -165,8 +158,7 @@ const TeacherUpdate = ({
               />
             </div>
 
-
-
+            <div>
               <div className="mt-4 flex items-center gap-2">
                 <Controller
                   control={control}
