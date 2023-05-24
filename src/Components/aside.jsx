@@ -71,7 +71,7 @@ const Aside = () => {
             <Sidebar.Item as={Link} to="guardians" icon={guardicon}>
               Guardians
             </Sidebar.Item>
-            <Sidebar.Item href="#" icon={teachericon}>
+            <Sidebar.Item as={Link} to="teachers" icon={teachericon}>
               Teachers
             </Sidebar.Item>
 
