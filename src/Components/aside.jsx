@@ -56,26 +56,26 @@ const Aside = () => {
         </Sidebar.Logo>
         <Sidebar.Items>
           <Sidebar.ItemGroup>
-            <Sidebar.Item as={Link} to="dashboard" icon={dash}>
+            <Sidebar.Item as={Link} to="/dashboard" icon={dash}>
               Dashboard
             </Sidebar.Item>
             <Sidebar.Collapse label="Classes" icon={classicon}>
               <Sidebar.Item href="#">Products</Sidebar.Item>
             </Sidebar.Collapse>
-            <Sidebar.Item as={Link} to="students" icon={stud}>
+            <Sidebar.Item as={Link} to="/students" icon={stud}>
               Students
             </Sidebar.Item>
-            <Sidebar.Item as={Link} to="users" icon={usericon}>
+            <Sidebar.Item as={Link} to="/users" icon={usericon}>
               Users
             </Sidebar.Item>
-            <Sidebar.Item as={Link} to="guardians" icon={guardicon}>
+            <Sidebar.Item as={Link} to="/guardians" icon={guardicon}>
               Guardians
             </Sidebar.Item>
-            <Sidebar.Item as={Link} to="teachers" icon={teachericon}>
+            <Sidebar.Item as={Link} to="/teachers" icon={teachericon}>
               Teachers
             </Sidebar.Item>
 
-            <Sidebar.Item as={Link} to="teachers" icon={payicon}>
+            <Sidebar.Item as={Link} to="/teachers" icon={payicon}>
               Payments
             </Sidebar.Item>
             <Sidebar.Collapse label="Reports" icon={reporticon}>

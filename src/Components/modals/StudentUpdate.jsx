@@ -50,7 +50,6 @@ const StudentUpdate = ({
   });
   const queryClient = useQueryClient();
 
-  console.log(objData);
   useEffect(() => {
     reset({
       id: objData?.id ?? 0,

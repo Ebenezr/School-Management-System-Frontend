@@ -7,6 +7,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
 const gender = [
   {
     name: "MALE",
@@ -40,6 +41,7 @@ const StudentCreate = ({
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(FormSchema),
@@ -89,12 +91,13 @@ const StudentCreate = ({
       },
     }
   );
+  const classId = watch("classId") ?? "0";
   const { isLoading } = createPost;
   const onSubmit = async (data) => {
     try {
       const requestData = {
         ...data,
-        classId: Number(data.classId), // Convert the value to a number
+        classId: Number(classId), // Convert the value to a number
       };
       createPost.mutate(requestData);
     } catch (error) {
@@ -250,12 +253,12 @@ const StudentCreate = ({
               <Controller
                 control={control}
                 name="classId"
-                defaultValue={0}
+                defaultValue={"0"}
                 render={({ field }) => (
                   <div>
                     <Select
                       id="classId"
-                      type="number"
+                      // type="number"
                       value={field.value}
                       color={`${errors.classId ? "failure" : "gray"}`}
                       required={true}
