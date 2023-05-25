@@ -2,15 +2,14 @@ import React, { Suspense } from "react";
 import Layout from "./Components/Layout";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./index.css";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./Pages/Dashboard";
+import Login from "./Pages/Login";
 const Student = React.lazy(() => import("./Pages/Student"));
 const Teacher = React.lazy(() => import("./Pages/Teacher"));
 const Guardian = React.lazy(() => import("./Pages/Guardian"));
 const User = React.lazy(() => import("./Pages/User"));
-const Class =React.lazy(()=>import("./Pages/Class"))
-import Login from "./Pages/Login";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const Class = React.lazy(() => import("./Pages/Class"));
 
 // Create a client
 const queryClient = new QueryClient();
@@ -45,7 +44,7 @@ function App() {
                 </Layout>
               }
             />
-                  <Route
+            <Route
               path="/classes"
               element={
                 <Layout>
