@@ -43,6 +43,7 @@ const StudentUpdate = ({
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(FormSchema),
@@ -95,11 +96,12 @@ const StudentUpdate = ({
     }
   );
   const { isLoading } = updatePost;
+  const classId = watch("classId") ?? "0";
   const onSubmit = async (data) => {
     try {
       const requestData = {
         ...data,
-        classId: Number(data.classId), // Convert the value to a number
+        classId: Number(classId), // Convert the value to a number
       };
       updatePost.mutate(requestData);
     } catch (error) {
