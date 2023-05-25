@@ -137,7 +137,6 @@ const ClassUpdate = ({
                   <div>
                     <Select
                       id="teacherId"
-                      // type="number"
                       value={field.value}
                       color={`${errors.teacherId ? "failure" : "gray"}`}
                       required={true}
@@ -149,7 +148,7 @@ const ClassUpdate = ({
                       </option>
                       {teachersList?.map((option) => (
                         <option key={option.id} value={option.id}>
-                          `{option.first_name} {option.last_name}`
+                          {option.first_name} {option.last_name}
                         </option>
                       ))}
                     </Select>
