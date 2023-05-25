@@ -55,8 +55,8 @@ const TeacherUpdate = ({
         if (error) {
           setShowErrorToast(true);
         } else {
-          setShowSuccessToast(true);
           queryClient.invalidateQueries(["teachers-data"]);
+          setShowSuccessToast(true);
           reset();
           onClose();
         }
@@ -82,47 +82,24 @@ const TeacherUpdate = ({
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <Label
-                htmlFor="id"
-                value="ID"
-                color={`${errors.id ? "failure" : "gray"}`}
-              />
-              <Controller
-                control={control}
-                name="id"
-                defaultValue={objData?.id ?? 0}
-                render={({ field }) => (
-                  <TextInput
-                    id="id"
-                    placeholder="ID"
-                    required={true}
-                    color={`${errors.id ? "failure" : "gray"}`}
-                    helperText={errors.id?.message}
-                    {...field}
-                    disabled={true}
-                  />
-                )}
-              />
-            </div>
-            <div>
               <div className="mb-2 block">
                 <Label
-                  htmlFor="name"
-                  value="Full Name"
-                  color={errors.name ? "failure" : "gray"}
+                  htmlFor="first_name"
+                  value="First Name"
+                  color={errors.first_name ? "failure" : "gray"}
                 />
               </div>
               <Controller
                 control={control}
-                name="name"
-                defaultValue=""
+                name="first_name"
+                defaultValue={objData?.first_name ?? ""}
                 render={({ field }) => (
                   <TextInput
-                    id="name"
-                    placeholder="John Doe"
+                    id="first_name"
+                    placeholder="First name"
                     required={true}
-                    color={errors.name ? "failure" : "gray"}
-                    helperText={errors.name?.message}
+                    color={errors.first_name ? "failure" : "gray"}
+                    helperText={errors.first_name?.message}
                     {...field}
                   />
                 )}
@@ -131,57 +108,50 @@ const TeacherUpdate = ({
             <div>
               <div className="mb-2 block">
                 <Label
-                  htmlFor="email"
-                  value="Email"
-                  color={errors.email ? "failure" : "gray"}
+                  htmlFor="last_name"
+                  value="Last Name"
+                  color={errors.last_name ? "failure" : "gray"}
                 />
               </div>
               <Controller
                 control={control}
-                name="email"
-                defaultValue=""
+                name="last_name"
+                defaultValue={objData?.last_name ?? ""}
                 render={({ field }) => (
                   <TextInput
-                    id="email"
-                    placeholder="name@mail.com"
+                    id="last_name"
+                    placeholder="Last name"
                     required={true}
-                    color={errors.email ? "failure" : "gray"}
-                    helperText={errors.email?.message}
+                    color={errors.last_name ? "failure" : "gray"}
+                    helperText={errors.last_name?.message}
                     {...field}
                   />
                 )}
               />
             </div>
-
             <div>
               <div className="mb-2 block">
                 <Label
-                  htmlFor="role"
-                  value="Role"
-                  color={`${errors.role ? "failure" : "gray"}`}
+                  htmlFor="phone"
+                  value="Phone"
+                  color={errors.phone ? "failure" : "gray"}
                 />
               </div>
-
-              <div className="mt-4 flex items-center gap-2">
-                <Controller
-                  control={control}
-                  name="activeStatus"
-                  defaultValue={objData?.activeStatus ?? false}
-                  render={({ field }) => (
-                    <Checkbox
-                      checked={field.value}
-                      id="activeStatus"
-                      label="Can Login"
-                      {...field}
-                    />
-                  )}
-                />
-                <Label
-                  htmlFor="activeStatus"
-                  value="Can Login"
-                  color={`${errors.activeStatus ? "failure" : "gray"}`}
-                />
-              </div>
+              <Controller
+                control={control}
+                name="phone"
+                defaultValue={objData?.phone ?? ""}
+                render={({ field }) => (
+                  <TextInput
+                    id="phone"
+                    placeholder="0700000000"
+                    required={true}
+                    color={errors.phone ? "failure" : "gray"}
+                    helperText={errors.phone?.message}
+                    {...field}
+                  />
+                )}
+              />
             </div>
 
             <div className="w-full mt-3 flex items-end">

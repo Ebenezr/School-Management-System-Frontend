@@ -8,6 +8,7 @@ const Student = React.lazy(() => import("./Pages/Student"));
 const Teacher = React.lazy(() => import("./Pages/Teacher"));
 const Guardian = React.lazy(() => import("./Pages/Guardian"));
 const User = React.lazy(() => import("./Pages/User"));
+const Class =React.lazy(()=>import("./Pages/Class"))
 import Login from "./Pages/Login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -41,6 +42,14 @@ function App() {
               element={
                 <Layout>
                   <Teacher />
+                </Layout>
+              }
+            />
+                  <Route
+              path="/classes"
+              element={
+                <Layout>
+                  <Class />
                 </Layout>
               }
             />

@@ -50,6 +50,7 @@ const TeacherCreate = ({
         setShowSuccessToast(true);
         queryClient.invalidateQueries(["teachers-data"]);
         onClose();
+        reset();
       },
       onError: () => {
         setShowErrorToast(true);
