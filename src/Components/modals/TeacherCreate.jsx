@@ -44,7 +44,7 @@ const TeacherCreate = ({
 
   const createPost = useMutation(
     (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/teacher/post`, newPost),
+      axios.post(`${process.env.REACT_APP_BASE_URL}/teachers/post`, newPost),
     {
       onSuccess: () => {
         setShowSuccessToast(true);

@@ -56,11 +56,11 @@ const ClassCreate = ({
 
   const createPost = useMutation(
     (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/teachers/post`, newPost),
+      axios.post(`${process.env.REACT_APP_BASE_URL}/classes/post`, newPost),
     {
       onSuccess: () => {
         setShowSuccessToast(true);
-        queryClient.invalidateQueries(["teachers-data"]);
+        queryClient.invalidateQueries(["classes-data"]);
         reset();
 
         onClose();
@@ -147,7 +147,7 @@ const ClassCreate = ({
                       </option>
                       {teachersList?.map((option) => (
                         <option key={option.id} value={option.id}>
-                          `{option.first_name} {option.last_name}`
+                          {option.first_name} {option.last_name}
                         </option>
                       ))}
                     </Select>

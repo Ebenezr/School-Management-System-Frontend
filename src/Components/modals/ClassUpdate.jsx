@@ -36,7 +36,7 @@ const ClassUpdate = ({
       name: objData?.name ?? "",
       teacherId: objData?.teacherId ?? 0,
     });
-  }, [reset]);
+  }, [reset, objData]);
 
   // for dropdown
   const fetchTeachersList = async () => {
@@ -56,7 +56,7 @@ const ClassUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`, postData);
+      axios.patch(`${process.env.REACT_APP_BASE_URL}/class/${id}`, postData);
     },
     {
       onSettled: (error) => {
@@ -64,7 +64,7 @@ const ClassUpdate = ({
           setShowErrorToast(true);
         } else {
           setShowSuccessToast(true);
-          queryClient.invalidateQueries(["teachers-data"]);
+          queryClient.invalidateQueries(["classes-data"]);
           reset();
 
           onClose();
