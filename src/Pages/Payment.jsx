@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -25,8 +26,10 @@ import {
   DialogTitle,
   IconButton,
   Pagination,
+  ThemeProvider,
   Toolbar,
   Tooltip,
+  createTheme,
 } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -36,12 +39,26 @@ import { Button, Toast } from "flowbite-react";
 import PaymentCreate from "../Components/modals/PaymentCreate";
 import axios from "axios";
 import PaymentUpdate from "../Components/modals/PaymentUpdate";
+import { ThemeContext } from "../context/ThemeContext";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",
 });
 
+const DarkTheme = createTheme({
+  palette: {
+    type: "dark",
+  },
+});
+
+const LightTheme = createTheme({
+  palette: {
+    type: "light",
+  },
+});
+
 const Payment = () => {
+  const { isDark } = useContext(ThemeContext);
   const queryClient = useQueryClient();
   const [columnFilters, setColumnFilters] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -255,125 +272,163 @@ const Payment = () => {
   return (
     <section className=" h-full w-full  p-4">
       <h1 className="mb-4 font-semibold tracking-wide text-lg">Payments</h1>
-      <Box className="border-slate-200 rounded border-[1px] p-4">
-        {tableInstanceRef.current && (
-          <Toolbar
-            sx={() => ({
-              backgroundColor: "#ede7f6",
+      <ThemeProvider theme={isDark ? DarkTheme : LightTheme}>
+        <Box className="border-slate-200 rounded border-[1px] p-4">
+          {tableInstanceRef.current && (
+            <Toolbar
+              sx={() => ({
+                backgroundColor: "#ede7f6",
 
-              borderRadius: "4px",
+                borderRadius: "4px",
 
-              display: "flex",
+                display: "flex",
 
-              flexDirection: {
-                xs: "column",
+                flexDirection: {
+                  xs: "column",
 
-                lg: "row",
-              },
+                  lg: "row",
+                },
 
-              gap: "1rem",
+                gap: "1rem",
 
-              justifyContent: "space-between",
+                justifyContent: "space-between",
 
-              p: "1.5rem 0",
-            })}
-          >
-            <Box className="gap-3 flex items-center">
-              <Button
-                onClick={() => setCreateModalOpen(true)}
-                outline={true}
-                gradientDuoTone="purpleToBlue"
-              >
-                Add Payment
-              </Button>
-            </Box>
-
-            <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
-
-            <Box>
-              <MRT_ToggleFiltersButton table={tableInstanceRef.current} />
-
-              <MRT_ShowHideColumnsButton table={tableInstanceRef.current} />
-
-              <MRT_ToggleDensePaddingButton table={tableInstanceRef.current} />
-
-              <MRT_FullScreenToggleButton table={tableInstanceRef.current} />
-            </Box>
-          </Toolbar>
-        )}
-
-        <MaterialReactTable
-          columns={columns}
-          data={tableData ?? []}
-          initialState={{
-            showGlobalFilter: true,
-            showColumnFilters: false,
-          }}
-          enableTopToolbar={false}
-          enableRowActions
-          manualFiltering
-          manualPagination
-          manualSorting
-          muiToolbarAlertBannerProps={
-            isError
-              ? {
-                  color: "error",
-
-                  children: "Error loading data",
-                }
-              : undefined
-          }
-          onColumnFiltersChange={setColumnFilters}
-          onGlobalFilterChange={setGlobalFilter}
-          onPaginationChange={setPagination}
-          onSortingChange={setSorting}
-          renderBottomToolbarCustomActions={() => (
-            <>
-              <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => refetch()}>
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-          renderRowActions={({ row }) => (
-            <Box sx={{ display: "flex", gap: "1rem" }}>
-              <Tooltip arrow placement="left" title="Edit">
-                <IconButton
-                  onClick={() => {
-                    setUpdateModalOpen(true);
-                    setSelectedData(row);
-                  }}
+                p: "1.5rem 0",
+              })}
+            >
+              <Box className="gap-3 flex items-center">
+                <Button
+                  onClick={() => setCreateModalOpen(true)}
+                  outline={true}
+                  gradientDuoTone="purpleToBlue"
                 >
-                  <Edit />
-                </IconButton>
-              </Tooltip>
+                  Add Payment
+                </Button>
+              </Box>
 
-              <Tooltip arrow placement="right" title="Delete">
-                <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                  <Delete />
-                </IconButton>
-              </Tooltip>
-            </Box>
+              <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
+
+              <Box>
+                <MRT_ToggleFiltersButton table={tableInstanceRef.current} />
+
+                <MRT_ShowHideColumnsButton table={tableInstanceRef.current} />
+
+                <MRT_ToggleDensePaddingButton
+                  table={tableInstanceRef.current}
+                />
+
+                <MRT_FullScreenToggleButton table={tableInstanceRef.current} />
+              </Box>
+            </Toolbar>
           )}
-          rowCount={data?.itemsPerPage ?? 0}
-          tableInstanceRef={tableInstanceRef}
-          state={{
-            columnFilters,
 
-            globalFilter,
+          <MaterialReactTable
+            columns={columns}
+            data={tableData ?? []}
+            initialState={{
+              showGlobalFilter: true,
+              showColumnFilters: false,
+            }}
+            enableTopToolbar={false}
+            enableRowActions
+            manualFiltering
+            manualPagination
+            manualSorting
+            muiToolbarAlertBannerProps={
+              isError
+                ? {
+                    color: "error",
 
-            isLoading,
+                    children: "Error loading data",
+                  }
+                : undefined
+            }
+            onColumnFiltersChange={setColumnFilters}
+            onGlobalFilterChange={setGlobalFilter}
+            onPaginationChange={setPagination}
+            onSortingChange={setSorting}
+            renderBottomToolbarCustomActions={() => (
+              <>
+                <Tooltip arrow title="Refresh Data">
+                  <IconButton onClick={() => refetch()}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+            renderRowActions={({ row }) => (
+              <Box sx={{ display: "flex", gap: "1rem" }}>
+                <Tooltip arrow placement="left" title="Edit">
+                  <IconButton
+                    onClick={() => {
+                      setUpdateModalOpen(true);
+                      setSelectedData(row);
+                    }}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
 
-            pagination,
+                <Tooltip arrow placement="right" title="Delete">
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDeleteRow(row)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+            rowCount={data?.itemsPerPage ?? 0}
+            tableInstanceRef={tableInstanceRef}
+            state={{
+              columnFilters,
 
-            showAlertBanner: isError,
+              globalFilter,
 
-            showProgressBars: isFetching,
+              isLoading,
 
-            sorting,
-          }}
-          {...(tableInstanceRef.current && (
+              pagination,
+
+              showAlertBanner: isError,
+
+              showProgressBars: isFetching,
+
+              sorting,
+            }}
+            {...(tableInstanceRef.current && (
+              <Toolbar
+                sx={{
+                  display: "flex",
+
+                  justifyContent: "center",
+
+                  flexDirection: "column",
+                }}
+              >
+                <Box
+                  className="place-items-center"
+                  sx={{ display: "grid", width: "100%" }}
+                >
+                  <Pagination
+                    variant="outlined"
+                    shape="rounded"
+                    count={data?.totalPages ?? 0}
+                    page={pagination.pageIndex + 1}
+                    onChange={(event, value) =>
+                      setPagination((prevPagination) => ({
+                        ...prevPagination,
+                        pageIndex: value - 1,
+                      }))
+                    }
+                  />
+                </Box>
+              </Toolbar>
+            ))}
+          />
+          {/* Custom Bottom Toolbar */}
+
+          {tableInstanceRef.current && (
             <Toolbar
               sx={{
                 display: "flex",
@@ -401,40 +456,9 @@ const Payment = () => {
                 />
               </Box>
             </Toolbar>
-          ))}
-        />
-        {/* Custom Bottom Toolbar */}
-
-        {tableInstanceRef.current && (
-          <Toolbar
-            sx={{
-              display: "flex",
-
-              justifyContent: "center",
-
-              flexDirection: "column",
-            }}
-          >
-            <Box
-              className="place-items-center"
-              sx={{ display: "grid", width: "100%" }}
-            >
-              <Pagination
-                variant="outlined"
-                shape="rounded"
-                count={data?.totalPages ?? 0}
-                page={pagination.pageIndex + 1}
-                onChange={(event, value) =>
-                  setPagination((prevPagination) => ({
-                    ...prevPagination,
-                    pageIndex: value - 1,
-                  }))
-                }
-              />
-            </Box>
-          </Toolbar>
-        )}
-      </Box>
+          )}
+        </Box>
+      </ThemeProvider>
       <PaymentCreate
         open={createModalOpen}
         setShowSuccessToast={setShowSuccessToast}

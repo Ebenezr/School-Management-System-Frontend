@@ -30,20 +30,23 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="flex flex-col justify-center items-center h-screen">
-          <h1 className="text-2xl font-bold text-red-600">
+        <div className="flex flex-col justify-center items-center h-screen bg-gray-700">
+          <h1 className="text-2xl font-semibold text-purple-100">
             Something went wrong.
           </h1>
-          <div className="mt-4">
+          <p className="text-slate-50 my-4">
+            Please try again later or contact support if the problem persists.
+          </p>
+          <div className="grid grid-cols-2 w-1/3 gap-3 items-center mt-4">
             <button
+              className="bg-purple-200 text-purple-600 rounded-sm font-semibold py-2 px-4 hover:bg-purple-300 hover:text-purple-900"
               onClick={this.retry}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4"
             >
               Retry
             </button>
             <button
+              className="border-slate-300 border-[1px] text-slate-50 rounded-sm font-semibold py-2 px-4 hover:bg-slate-300 hover:text-slate-900"
               onClick={this.goBack}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
             >
               Go Back
             </button>
