@@ -74,7 +74,7 @@ const PaymentUpdate = ({
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/terms/all`
       );
-      return response.data.grade;
+      return response.data.term;
     } catch (error) {
       throw new Error("Error fetching term data");
     }
@@ -204,7 +204,7 @@ const PaymentUpdate = ({
               <div className="mb-2 block">
                 <Label
                   htmlFor="termId"
-                  value="term"
+                  value="Term"
                   color={`${errors.termId ? "failure" : "gray"}`}
                 />
               </div>
