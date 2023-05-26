@@ -1,6 +1,8 @@
 import { Avatar, Button, Sidebar, ToggleSwitch } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaSun, FaMoon } from "react-icons/fa";
+
 import stud from "./svg/stud";
 import dash from "./svg/dash";
 import usericon from "./svg/usericon";
@@ -13,9 +15,10 @@ import teachericon from "./svg/teachericon";
 import { CiLogout } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from "../utils/hooks/localstorage";
+import { ThemeContext } from "../context/ThemeContext";
 const Aside = () => {
   const navigate = useNavigate();
-  const [theme, setTheme] = useState("light");
+  const { isDark, toggleTheme } = useContext(ThemeContext);
   const { isAuthenticated, expiresAt, name, role } = useIsAuthenticated();
 
   const initials = name
@@ -49,12 +52,8 @@ const Aside = () => {
     navigate("/");
   }
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   return (
-    <div className={`bg-slate-50 w-fit h-screen flex flex-col ${theme}-theme`}>
+    <div className={`w-fit h-screen flex flex-col ${isDark ? "dark" : ""}`}>
       <Sidebar aria-label="Sidebar Menu">
         <Sidebar.Logo href="#" img="favicon.png" imgAlt="">
           School Soft
@@ -94,36 +93,43 @@ const Aside = () => {
             </Sidebar.Collapse>
           </Sidebar.ItemGroup>
         </Sidebar.Items>
-      </Sidebar>
-      <ToggleSwitch
-        label="Theme"
-        // value={theme === "dark"}
-        checked={theme === "dark"}
-        onChange={toggleTheme}
-        className="my-4 mx-2"
-      />
-      <div className="flex flex-col justify-center w-full px-2 py-4">
-        <div className="flex items-end  pb-6 w-full ">
-          <Avatar placeholderInitials={initials} rounded={true}>
-            <div className="space-y-1 font-medium dark:text-white">
-              <div>{name}</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                {role}
-              </div>
-            </div>
-          </Avatar>
-        </div>
-        <div>
-          <Button
-            className="mx-auto w-full"
-            color="purple"
-            onClick={signOutUser}
+        <Sidebar.ItemGroup>
+          <ToggleSwitch
+            label={!isDark ? "Light Mode" : "Dark Mode"}
+            checked={isDark}
+            onChange={toggleTheme}
+            className="my-4 mx-2 mb-auto"
           >
-            Sign out
-            <CiLogout className="ml-2 h-5 w-5" />
-          </Button>
-        </div>
-      </div>
+            {isDark ? <FaSun /> : <FaMoon />}
+          </ToggleSwitch>
+          <div
+            className={`flex flex-col justify-center w-full px-2 py-4 ${
+              isDark ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
+            <div className="flex items-end  pb-6 w-full ">
+              <Avatar placeholderInitials={initials} rounded={true}>
+                <div className="space-y-1 font-medium dark:text-white">
+                  <div>{name}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    {role}
+                  </div>
+                </div>
+              </Avatar>
+            </div>
+            <div>
+              <Button
+                className="mx-auto w-full"
+                color="purple"
+                onClick={signOutUser}
+              >
+                Sign out
+                <CiLogout className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </Sidebar.ItemGroup>
+      </Sidebar>
     </div>
   );
 };

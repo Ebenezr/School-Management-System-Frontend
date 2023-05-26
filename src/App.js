@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
+import { ThemeProvider } from "./context/ThemeContext";
 const Student = React.lazy(() => import("./Pages/Student"));
 const Teacher = React.lazy(() => import("./Pages/Teacher"));
 const Guardian = React.lazy(() => import("./Pages/Guardian"));
@@ -19,69 +20,71 @@ function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Suspense fallback={<Spinner />}>
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/students"
-                element={
-                  <Layout>
-                    <Student />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/teachers"
-                element={
-                  <Layout>
-                    <Teacher />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/classes"
-                element={
-                  <Layout>
-                    <Class />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/guardians"
-                element={
-                  <Layout>
-                    <Guardian />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/users"
-                element={
-                  <Layout>
-                    <User />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/school"
-                element={
-                  <Layout>
-                    <School />
-                  </Layout>
-                }
-              />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
+        <ThemeProvider>
+          <BrowserRouter>
+            <Suspense fallback={<Spinner />}>
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <Layout>
+                      <Dashboard />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/students"
+                  element={
+                    <Layout>
+                      <Student />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/teachers"
+                  element={
+                    <Layout>
+                      <Teacher />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/classes"
+                  element={
+                    <Layout>
+                      <Class />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/guardians"
+                  element={
+                    <Layout>
+                      <Guardian />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    <Layout>
+                      <User />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/school"
+                  element={
+                    <Layout>
+                      <School />
+                    </Layout>
+                  }
+                />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

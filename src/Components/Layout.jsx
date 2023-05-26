@@ -1,17 +1,19 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import Aside from "./aside";
+import { Footer } from "flowbite-react";
+import { ThemeContext } from "../context/ThemeContext";
 
 const Layout = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [renderedChildren, setRenderedChildren] = useState(children);
-
+  const { isDark } = useContext(ThemeContext);
   useEffect(() => {
     setLoading(true);
     setRenderedChildren(children);
     setLoading(false);
   }, [children]);
   return (
-    <div className="flex min-h-screen">
+    <div className={`flex min-h-screen ${isDark ? "dark" : ""}`}>
       <Aside />
       <div className="flex-1 bg-gray-100">
         <div className="flex flex-col min-h-screen">
@@ -20,9 +22,12 @@ const Layout = ({ children }) => {
               {loading ? <Spinner /> : renderedChildren}
             </Suspense>
           </main>
-          <footer className="bg-white p-5 border-l-2 border-l-gray-300">
-            School Soft
-          </footer>
+          <Footer container={true}>
+            <Footer.Copyright href="#" by="School Soft" year={2023} />
+            <Footer.LinkGroup>
+              <Footer.Link href="#">Version 1.0.0</Footer.Link>
+            </Footer.LinkGroup>
+          </Footer>
         </div>
       </div>
     </div>

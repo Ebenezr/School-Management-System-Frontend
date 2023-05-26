@@ -1,4 +1,4 @@
-import { Button, Label, Modal, TextInput,Textarea } from "flowbite-react";
+import { Button, Label, Modal, TextInput, Textarea } from "flowbite-react";
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -15,13 +15,6 @@ const SchoolUpdate = ({
   setShowErrorToast,
   setShowSuccessToast,
 }) => {
-  // Name
-  // Email
-  // Phone
-  // Address
-  // Address 2
-  // Town
-  // School Moto
   const FormSchema = z.object({
     id: z.number().optional(),
     name: z.string().min(2, { message: "Name is required" }),
@@ -93,7 +86,7 @@ const SchoolUpdate = ({
     <Modal show={open} size="md" popup={true} onClose={onClose}>
       <Modal.Header />
       <Modal.Body>
-        <div className="space-y-6 px-4 pb-4 sm:pb-6 lg:px-8 xl:pb-8 relative z-0">
+        <div className="space-y-6 px-4 pb-4 sm:pb-6 lg:px-4 xl:pb-8 relative z-0">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
             Update School Info
           </h3>
@@ -170,53 +163,55 @@ const SchoolUpdate = ({
                 )}
               />
             </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="address"
-                  value="Address"
-                  color={errors.address ? "failure" : "gray"}
-                />
-              </div>
-              <Controller
-                control={control}
-                name="address"
-                defaultValue={objData?.address ?? ""}
-                render={({ field }) => (
-                  <TextInput
-                    id="address"
-                    placeholder="Address"
-                    required={true}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="address"
+                    value="Address"
                     color={errors.address ? "failure" : "gray"}
-                    helperText={errors.address?.message}
-                    {...field}
                   />
-                )}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="address2"
-                  value="Address 2"
-                  color={errors.address2 ? "failure" : "gray"}
+                </div>
+                <Controller
+                  control={control}
+                  name="address"
+                  defaultValue={objData?.address ?? ""}
+                  render={({ field }) => (
+                    <TextInput
+                      id="address"
+                      placeholder="Address"
+                      required={true}
+                      color={errors.address ? "failure" : "gray"}
+                      helperText={errors.address?.message}
+                      {...field}
+                    />
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="address2"
-                defaultValue={objData?.address2 ?? ""}
-                render={({ field }) => (
-                  <TextInput
-                    id="address2"
-                    placeholder="Address 2"
-                    required={true}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="address2"
+                    value="Address 2"
                     color={errors.address2 ? "failure" : "gray"}
-                    helperText={errors.address2?.message}
-                    {...field}
                   />
-                )}
-              />
+                </div>
+                <Controller
+                  control={control}
+                  name="address2"
+                  defaultValue={objData?.address2 ?? ""}
+                  render={({ field }) => (
+                    <TextInput
+                      id="address2"
+                      placeholder="Address 2"
+                      required={true}
+                      color={errors.address2 ? "failure" : "gray"}
+                      helperText={errors.address2?.message}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
             </div>
             <div>
               <div className="mb-2 block">
@@ -259,7 +254,7 @@ const SchoolUpdate = ({
                     id="school_motto"
                     placeholder="School Motto"
                     required={true}
-                      rows={4}
+                    rows={4}
                     color={errors.school_motto ? "failure" : "gray"}
                     helperText={errors.school_motto?.message}
                     {...field}
