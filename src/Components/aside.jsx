@@ -1,5 +1,5 @@
-import { Avatar, Button, Sidebar } from "flowbite-react";
-import React, { useEffect } from "react";
+import { Avatar, Button, Sidebar, ToggleSwitch } from "flowbite-react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import stud from "./svg/stud";
 import dash from "./svg/dash";
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from "../utils/hooks/localstorage";
 const Aside = () => {
   const navigate = useNavigate();
+  const [theme, setTheme] = useState("light");
   const { isAuthenticated, expiresAt, name, role } = useIsAuthenticated();
 
   const initials = name
@@ -48,8 +49,12 @@ const Aside = () => {
     navigate("/");
   }
 
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+
   return (
-    <div className="w-fit h-screen flex flex-col">
+    <div className={`bg-slate-50 w-fit h-screen flex flex-col ${theme}-theme`}>
       <Sidebar aria-label="Sidebar Menu">
         <Sidebar.Logo href="#" img="favicon.png" imgAlt="">
           School Soft
@@ -89,6 +94,13 @@ const Aside = () => {
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
+      <ToggleSwitch
+        label="Theme"
+        // value={theme === "dark"}
+        checked={theme === "dark"}
+        onChange={toggleTheme}
+        className="my-4 mx-2"
+      />
       <div className="flex flex-col justify-center w-full px-2 py-4">
         <div className="flex items-end  pb-6 w-full ">
           <Avatar placeholderInitials={initials} rounded={true}>
