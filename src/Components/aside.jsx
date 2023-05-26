@@ -85,7 +85,7 @@ const Aside = () => {
               Teachers
             </Sidebar.Item>
 
-            <Sidebar.Item as={Link} to="/teachers" icon={payicon}>
+            <Sidebar.Item as={Link} to="/payments" icon={payicon}>
               Payments
             </Sidebar.Item>
             <Sidebar.Collapse label="Reports" icon={reporticon}>

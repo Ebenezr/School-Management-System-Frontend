@@ -13,6 +13,7 @@ const Guardian = React.lazy(() => import("./Pages/Guardian"));
 const User = React.lazy(() => import("./Pages/User"));
 const Class = React.lazy(() => import("./Pages/Class"));
 const School = React.lazy(() => import("./Pages/Setting"));
+const Payment = React.lazy(() => import("./Pages/Payment"));
 
 // Create a client
 const queryClient = new QueryClient();
@@ -73,6 +74,15 @@ function App() {
                     </Layout>
                   }
                 />
+                <Route
+                  path="/payments"
+                  element={
+                    <Layout>
+                      <Payment />
+                    </Layout>
+                  }
+                />
+
                 <Route
                   path="/school"
                   element={

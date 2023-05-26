@@ -30,7 +30,7 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center h-screen">
           <h1 className="text-2xl font-bold text-red-600">
             Something went wrong.
           </h1>
