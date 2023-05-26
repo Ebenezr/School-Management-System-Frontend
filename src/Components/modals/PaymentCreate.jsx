@@ -1,4 +1,4 @@
-import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
+import { Button, Label, Modal, Radio, Select, TextInput } from "flowbite-react";
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +14,7 @@ const PaymentCreate = ({
   setShowErrorToast,
   setShowSuccessToast,
 }) => {
+  const [paymentMode, setPaymentMode] = React.useState("Cash");
   const FormSchema = z.object({});
 
   const {
@@ -158,74 +159,156 @@ const PaymentCreate = ({
                 )}
               />
             </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="classId"
-                  value="Class"
-                  color={`${errors.classId ? "failure" : "gray"}`}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="classId"
+                    value="Class"
+                    color={`${errors.classId ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="classId"
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="classId"
+                        value={field.value}
+                        color={`${errors.classId ? "failure" : "gray"}`}
+                        required={true}
+                        helperText={errors.classId?.message}
+                        {...field}
+                      >
+                        <option value={0} disabled>
+                          Select Class
+                        </option>
+                        {classList?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="classId"
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="classId"
-                      value={field.value}
-                      color={`${errors.classId ? "failure" : "gray"}`}
-                      required={true}
-                      helperText={errors.classId?.message}
-                      {...field}
-                    >
-                      <option value={0} disabled>
-                        Select Class
-                      </option>
-                      {classList?.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="termId"
+                    value="Term"
+                    color={`${errors.termId ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="termId"
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="termId"
+                        value={field.value}
+                        color={`${errors.termId ? "failure" : "gray"}`}
+                        required={true}
+                        helperText={errors.termId?.message}
+                        {...field}
+                      >
+                        <option value={0} disabled>
+                          Select Term
                         </option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="termId"
-                  value="Term"
-                  color={`${errors.termId ? "failure" : "gray"}`}
+                        {termList?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="termId"
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="termId"
-                      value={field.value}
-                      color={`${errors.termId ? "failure" : "gray"}`}
-                      required={true}
-                      helperText={errors.termId?.message}
-                      {...field}
-                    >
-                      <option value={0} disabled>
-                        Select Term
-                      </option>
-                      {termList?.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-              />
             </div>
+            {/* PAYMENT MODE */}
+            <div className="py-3 grid grid-cols-2 gap-2">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                    paymentMode === "MPESA" ? "bg-purple-100" : ""
+                  }`}
+                >
+                  <Radio
+                    id="MPESA"
+                    name="payment_mode"
+                    value="MPESA"
+                    defaultChecked={true}
+                    onChange={() => setPaymentMode("MPESA")}
+                    className="text-sm"
+                  />
+                  <Label htmlFor="MPESA" className="ml-2 text-sm">
+                    MPESA
+                  </Label>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                    paymentMode === "BANK" ? "bg-purple-100" : ""
+                  }`}
+                >
+                  <Radio
+                    id="BANK"
+                    name="payment_mode"
+                    value="BANK"
+                    defaultChecked={false}
+                    onChange={() => setPaymentMode("BANK")}
+                    className="text-sm"
+                  />
+                  <Label htmlFor="BANK" className="ml-2 text-sm">
+                    BANK
+                  </Label>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                    paymentMode === "CASH" ? "bg-purple-100" : ""
+                  }`}
+                >
+                  <Radio
+                    id="CASH"
+                    name="payment_mode"
+                    value="CASH"
+                    defaultChecked={false}
+                    onChange={() => setPaymentMode("CASH")}
+                    className="text-sm"
+                  />
+                  <Label htmlFor="CASH" className="ml-2 text-sm">
+                    CASH
+                  </Label>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                    paymentMode === "CHEQUE" ? "bg-purple-100" : ""
+                  }`}
+                >
+                  <Radio
+                    id="CHEQUE"
+                    name="payment_mode"
+                    value="CHEQUE"
+                    defaultChecked={false}
+                    onChange={() => setPaymentMode("CHEQUE")}
+                    className="text-sm"
+                  />
+                  <Label htmlFor="CHEQUE" className="ml-2 text-sm">
+                    CHEQUE
+                  </Label>
+                </div>
+              </div>
+            </div>
+
             <div>
               <div className="mb-2 block">
                 <Label
