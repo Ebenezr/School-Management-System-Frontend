@@ -5,6 +5,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
+import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
 const Student = React.lazy(() => import("./Pages/Student"));
 const Teacher = React.lazy(() => import("./Pages/Teacher"));
 const Guardian = React.lazy(() => import("./Pages/Guardian"));
@@ -15,63 +16,65 @@ const Class = React.lazy(() => import("./Pages/Class"));
 const queryClient = new QueryClient();
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Suspense fallback={<Spinner />}>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              }
-            />
-            <Route
-              path="/students"
-              element={
-                <Layout>
-                  <Student />
-                </Layout>
-              }
-            />
-            <Route
-              path="/teachers"
-              element={
-                <Layout>
-                  <Teacher />
-                </Layout>
-              }
-            />
-            <Route
-              path="/classes"
-              element={
-                <Layout>
-                  <Class />
-                </Layout>
-              }
-            />
-            <Route
-              path="/guardians"
-              element={
-                <Layout>
-                  <Guardian />
-                </Layout>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <Layout>
-                  <User />
-                </Layout>
-              }
-            />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <Layout>
+                    <Student />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/teachers"
+                element={
+                  <Layout>
+                    <Teacher />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/classes"
+                element={
+                  <Layout>
+                    <Class />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/guardians"
+                element={
+                  <Layout>
+                    <Guardian />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <Layout>
+                    <User />
+                  </Layout>
+                }
+              />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
