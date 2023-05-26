@@ -208,7 +208,7 @@ const Student = () => {
 
   //column definitions...
   return (
-    <section className="bg-white h-full w-full  p-4">
+    <section className=" h-full w-full  p-4">
       <h1 className="mb-4 font-semibold tracking-wide text-lg">Students</h1>
       <Box className="border-slate-200 rounded border-[1px] p-4">
         {tableInstanceRef.current && (

@@ -53,8 +53,12 @@ const Aside = () => {
   }
 
   return (
-    <div className={`w-fit h-screen flex flex-col ${isDark ? "dark" : ""}`}>
-      <Sidebar aria-label="Sidebar Menu">
+    <section
+      className={`w-fit h-screen flex shadow-md  rounded-none flex-col ${
+        isDark ? "dark bg-gray-800" : ""
+      }`}
+    >
+      <Sidebar aria-label="Sidebar Menu" className="rounded-none">
         <Sidebar.Logo href="#" img="favicon.png" imgAlt="">
           School Soft
         </Sidebar.Logo>
@@ -130,7 +134,7 @@ const Aside = () => {
           </div>
         </Sidebar.ItemGroup>
       </Sidebar>
-    </div>
+    </section>
   );
 };
 

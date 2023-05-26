@@ -13,16 +13,20 @@ const Layout = ({ children }) => {
     setLoading(false);
   }, [children]);
   return (
-    <div className={`flex min-h-screen ${isDark ? "dark" : ""}`}>
+    <div className={`flex min-h-screen  ${isDark ? "dark" : ""}`}>
       <Aside />
-      <div className="flex-1 bg-gray-100">
+      <div
+        className={`flex-1  ${
+          isDark ? "text-gray-400 bg-gray-700" : "text-gray-500"
+        }`}
+      >
         <div className="flex flex-col min-h-screen">
           <main className="flex-1 p-5">
             <Suspense fallback={<Spinner />}>
               {loading ? <Spinner /> : renderedChildren}
             </Suspense>
           </main>
-          <Footer container={true}>
+          <Footer container={true} className="rounded-none">
             <Footer.Copyright href="#" by="School Soft" year={2023} />
             <Footer.LinkGroup>
               <Footer.Link href="#">Version 1.0.0</Footer.Link>
