@@ -72,7 +72,7 @@ const TeacherCreate = ({
       <Modal.Body>
         <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8 relative z-0">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-            Add New User
+            Add New Teacher
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div>
