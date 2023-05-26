@@ -46,18 +46,20 @@ const GuardianUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/guardian/${id}`, postData);
+      return axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/guardian/${id}`,
+        postData
+      );
     },
     {
-      onSettled: (error) => {
-        if (error) {
-          setShowErrorToast(true);
-        } else {
-          setShowSuccessToast(true);
-          queryClient.invalidateQueries(["guardians-data"]);
-          reset();
-          onClose();
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries(["guardians-data"]);
+        setShowSuccessToast(true);
+        reset();
+        onClose();
+      },
+      onError: () => {
+        setShowErrorToast(true);
       },
     }
   );

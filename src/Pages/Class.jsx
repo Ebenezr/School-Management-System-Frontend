@@ -150,6 +150,7 @@ const Class = () => {
       tableData.splice(rowToDelete.index, 1);
     }
     setOpenConfirmDialog(false);
+    refetch();
   };
 
   // reset toast

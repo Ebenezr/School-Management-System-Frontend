@@ -79,19 +79,20 @@ const StudentUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/student/${id}`, postData);
+      return axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/student/${id}`,
+        postData
+      );
     },
     {
-      onSettled: (error) => {
-        if (error) {
-          setShowErrorToast(true);
-        } else {
-          setShowSuccessToast(true);
-          queryClient.invalidateQueries(["students-data"]);
-          reset();
-
-          onClose();
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries(["students-data"]);
+        setShowSuccessToast(true);
+        reset();
+        onClose();
+      },
+      onError: () => {
+        setShowErrorToast(true);
       },
     }
   );

@@ -128,18 +128,20 @@ const Teacher = () => {
     []
   );
 
-  const deletePost = useMutation((id) => {
-    return axios
-      .delete(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`)
-      .then(() => {
-        queryClient.invalidateQueries(["teachers-data"]);
+  const deletePost = useMutation(
+    (id) => axios.delete(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`),
+    {
+      onSuccess: () => {
+        refetch(); // using refetch from useQuery
         setShowSuccessToast(true);
-        refetch();
-      })
-      .catch(() => {
+      },
+      onError: () => {
+        // Handle error
         setShowErrorToast(true);
-      });
-  });
+      },
+    }
+  );
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [rowToDelete, setRowToDelete] = useState(null);
   const handleDeleteRow = useCallback((row) => {
@@ -156,6 +158,7 @@ const Teacher = () => {
       tableData.splice(rowToDelete.index, 1);
     }
     setOpenConfirmDialog(false);
+    refetch();
   };
 
   // reset toast

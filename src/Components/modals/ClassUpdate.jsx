@@ -56,19 +56,20 @@ const ClassUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/class/${id}`, postData);
+      return axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/class/${id}`,
+        postData
+      );
     },
     {
-      onSettled: (error) => {
-        if (error) {
-          setShowErrorToast(true);
-        } else {
-          setShowSuccessToast(true);
-          queryClient.invalidateQueries(["classes-data"]);
-          reset();
-
-          onClose();
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries(["classes-data"]);
+        setShowSuccessToast(true);
+        reset();
+        onClose();
+      },
+      onError: () => {
+        setShowErrorToast(true);
       },
     }
   );

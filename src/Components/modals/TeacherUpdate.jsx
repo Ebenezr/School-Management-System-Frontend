@@ -48,18 +48,20 @@ const TeacherUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/teacher/${id}`, postData);
+      return axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/teacher/${id}`,
+        postData
+      ); // returning the axios.patch Promise
     },
     {
-      onSettled: (error) => {
-        if (error) {
-          setShowErrorToast(true);
-        } else {
-          queryClient.invalidateQueries(["teachers-data"]);
-          setShowSuccessToast(true);
-          reset();
-          onClose();
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries(["teachers-data"]);
+        setShowSuccessToast(true);
+        reset();
+        onClose();
+      },
+      onError: () => {
+        setShowErrorToast(true);
       },
     }
   );

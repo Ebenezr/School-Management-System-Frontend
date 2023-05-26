@@ -70,18 +70,20 @@ const UserUpdate = ({
   const updatePost = useMutation(
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
-      axios.patch(`${process.env.REACT_APP_BASE_URL}/user/${id}`, postData);
+      return axios.patch(
+        `${process.env.REACT_APP_BASE_URL}/user/${id}`,
+        postData
+      );
     },
     {
-      onSettled: (error) => {
-        if (error) {
-          setShowErrorToast(true);
-        } else {
-          setShowSuccessToast(true);
-          queryClient.invalidateQueries(["users-data"]);
-          reset();
-          onClose();
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries(["users-data"]);
+        setShowSuccessToast(true);
+        reset();
+        onClose();
+      },
+      onError: () => {
+        setShowErrorToast(true);
       },
     }
   );
