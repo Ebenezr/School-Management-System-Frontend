@@ -57,7 +57,7 @@ const SchoolUpdate = ({
     (updatedPost) => {
       const { id, ...postData } = updatedPost;
       return axios.patch(
-        `${process.env.REACT_APP_BASE_URL}/school/${id}`,
+        `${process.env.REACT_APP_BASE_URL}/school/update/${id}`,
         postData
       ); // returning the axios.patch Promise
     },
@@ -101,8 +101,7 @@ const SchoolUpdate = ({
               </div>
               <Controller
                 control={control}
-                name="first_name"
-                defaultValue={objData?.name ?? ""}
+                name="name"
                 render={({ field }) => (
                   <TextInput
                     id="name"
