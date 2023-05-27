@@ -1,6 +1,6 @@
 import { Button, Label, Modal, Radio, Select, TextInput } from "flowbite-react";
-import React, { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useEffect, useMemo } from "react";
+import { useForm, Controller, set } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -15,13 +15,25 @@ const PaymentCreate = ({
   setShowSuccessToast,
 }) => {
   const [paymentMode, setPaymentMode] = React.useState("Cash");
-  const FormSchema = z.object({});
+  const FormSchema = z.object({
+    termId: z.number().refine((value) => value >= 0, {
+      message: "Select term",
+    }),
+    classId: z.string().min(1, "Select a class"),
+    studentId: z.string().min(1, "Select a student"),
+    amount: z.number().refine((value) => value >= 0, {
+      message: "Amount total must be a non-negative number",
+    }),
+    reference: z.string().min(1, "Enter reference"),
+    payment_mode: z.enum(["MPESA", "CASH", "BANK", "CHEQUE"]),
+  });
 
   const {
     handleSubmit,
     control,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(FormSchema),
@@ -32,12 +44,12 @@ const PaymentCreate = ({
   // reset form
   useEffect(() => {
     reset({
-      termId: 0,
-      classId: 0,
-      studentId: 0,
-      amount: 0,
-      reference: "",
-      payment_mode: "",
+      termId: new Number(),
+      classId: new String(),
+      studentId: new String(),
+      amount: new Number(),
+      reference: new String(),
+      payment_mode: "MPESA",
     });
   }, [reset]);
 
@@ -101,6 +113,21 @@ const PaymentCreate = ({
   const classId = watch("classId") ?? "0";
   const studentId = watch("studentId") ?? "0";
   const termId = watch("termId") ?? "0";
+
+  // set classId when student is selected
+  const selectedClass = useMemo(() => {
+    // console.log("studentId", studentId);
+    // console.log("studentsList", studentsList);
+    const selectedStudent = studentsList?.find((student) => {
+      return student.id === studentId;
+    });
+    // console.log("selectedStudent", selectedStudent);
+    if (selectedStudent) {
+      setValue("classId", selectedStudent.classId);
+    }
+  }, [studentsList, studentId, setValue]);
+
+  // console.log("class", classId, "student", studentId, "term", termId);
   const { isLoading } = createPost;
   const onSubmit = async (data) => {
     try {
@@ -171,6 +198,7 @@ const PaymentCreate = ({
                 <Controller
                   control={control}
                   name="classId"
+                  defaultValue={classId}
                   render={({ field }) => (
                     <div>
                       <Select
@@ -209,11 +237,16 @@ const PaymentCreate = ({
                     <div>
                       <Select
                         id="termId"
-                        value={field.value}
+                        value={termList?.find(
+                          (term) => term?.id === field?.value
+                        )}
                         color={`${errors.termId ? "failure" : "gray"}`}
                         required={true}
                         helperText={errors.termId?.message}
                         {...field}
+                        // onChange={(_, value) => {
+                        //   field.onChange(value?.id || 0);
+                        // }}
                       >
                         <option value={0} disabled>
                           Select Term
@@ -230,81 +263,100 @@ const PaymentCreate = ({
               </div>
             </div>
             {/* PAYMENT MODE */}
-            <div className="py-3 grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                    paymentMode === "MPESA" ? "bg-purple-100" : ""
-                  }`}
-                >
-                  <Radio
-                    id="MPESA"
-                    name="payment_mode"
-                    value="MPESA"
-                    defaultChecked={true}
-                    onChange={() => setPaymentMode("MPESA")}
-                    className="text-sm"
-                  />
-                  <Label htmlFor="MPESA" className="ml-2 text-sm">
-                    MPESA
-                  </Label>
+            <div>
+              <Label
+                htmlFor="payment_mode"
+                value="Payment Mode"
+                color={`${errors.payment_mode ? "failure" : "gray"}`}
+              />
+              <div className="py-3 grid grid-cols-2 gap-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "MPESA" ? "bg-purple-100" : ""
+                    }`}
+                  >
+                    <Radio
+                      id="MPESA"
+                      name="payment_mode"
+                      value="MPESA"
+                      defaultChecked={true}
+                      onChange={() => {
+                        setPaymentMode("MPESA");
+                        setValue("payment_mode", "MPESA");
+                      }}
+                      className="text-sm"
+                    />
+                    <Label htmlFor="MPESA" className="ml-2 text-sm">
+                      MPESA
+                    </Label>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                    paymentMode === "BANK" ? "bg-purple-100" : ""
-                  }`}
-                >
-                  <Radio
-                    id="BANK"
-                    name="payment_mode"
-                    value="BANK"
-                    defaultChecked={false}
-                    onChange={() => setPaymentMode("BANK")}
-                    className="text-sm"
-                  />
-                  <Label htmlFor="BANK" className="ml-2 text-sm">
-                    BANK
-                  </Label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "BANK" ? "bg-purple-100" : ""
+                    }`}
+                  >
+                    <Radio
+                      id="BANK"
+                      name="payment_mode"
+                      value="BANK"
+                      defaultChecked={false}
+                      onChange={() => {
+                        setPaymentMode("BANK");
+                        setValue("payment_mode", "BANK");
+                      }}
+                      className="text-sm"
+                    />
+                    <Label htmlFor="BANK" className="ml-2 text-sm">
+                      BANK
+                    </Label>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                    paymentMode === "CASH" ? "bg-purple-100" : ""
-                  }`}
-                >
-                  <Radio
-                    id="CASH"
-                    name="payment_mode"
-                    value="CASH"
-                    defaultChecked={false}
-                    onChange={() => setPaymentMode("CASH")}
-                    className="text-sm"
-                  />
-                  <Label htmlFor="CASH" className="ml-2 text-sm">
-                    CASH
-                  </Label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "CASH" ? "bg-purple-100" : ""
+                    }`}
+                  >
+                    <Radio
+                      id="CASH"
+                      name="payment_mode"
+                      value="CASH"
+                      defaultChecked={false}
+                      onChange={() => {
+                        setPaymentMode("CASH");
+                        setValue("payment_mode", "CASH");
+                      }}
+                      className="text-sm"
+                    />
+                    <Label htmlFor="CASH" className="ml-2 text-sm">
+                      CASH
+                    </Label>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                    paymentMode === "CHEQUE" ? "bg-purple-100" : ""
-                  }`}
-                >
-                  <Radio
-                    id="CHEQUE"
-                    name="payment_mode"
-                    value="CHEQUE"
-                    defaultChecked={false}
-                    onChange={() => setPaymentMode("CHEQUE")}
-                    className="text-sm"
-                  />
-                  <Label htmlFor="CHEQUE" className="ml-2 text-sm">
-                    CHEQUE
-                  </Label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "CHEQUE" ? "bg-purple-100" : ""
+                    }`}
+                  >
+                    <Radio
+                      id="CHEQUE"
+                      name="payment_mode"
+                      value="CHEQUE"
+                      defaultChecked={false}
+                      onChange={() => {
+                        setPaymentMode("CHEQUE");
+                        setValue("payment_mode", "CHEQUE");
+                      }}
+                      className="text-sm"
+                    />
+                    <Label htmlFor="CHEQUE" className="ml-2 text-sm">
+                      CHEQUE
+                    </Label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -320,15 +372,17 @@ const PaymentCreate = ({
               <Controller
                 control={control}
                 name="amount"
-                defaultValue=""
+                defaultValue={0}
                 render={({ field }) => (
                   <TextInput
                     id="amount"
+                    type="number"
                     placeholder="Amount"
                     required={true}
                     color={errors.amount ? "failure" : "gray"}
                     helperText={errors.amount?.message}
-                    {...field}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 )}
               />
