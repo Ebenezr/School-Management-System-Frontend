@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import SchoolUpdate from "../Components/modals/SchoolUpdate";
+import TermUpdate from "../Components/modals/TermUpdate";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { Toast } from "flowbite-react";
 import { HiCheck } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
-import { Toast } from "flowbite-react";
 const Setting = () => {
   return (
     <div className="flex flex-col gap-3">
-      <SettingsCard />
+      <TermCard />
     </div>
   );
 };
 
 export default Setting;
 
-function SettingsCard() {
+function TermCard() {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -23,19 +24,19 @@ function SettingsCard() {
 
   const fetchData = async () => {
     try {
-      const [schoolResponse] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_BASE_URL}/schools/all`),
+      const [termResponse] = await Promise.all([
+        axios.get(`${process.env.REACT_APP_BASE_URL}/terms/all`),
       ]);
 
       return {
-        school: schoolResponse?.data,
+        term: termResponse?.data?.term,
       };
     } catch (error) {
       throw new Error("Error fetching data");
     }
   };
 
-  const { data } = useQuery(["school-data"], fetchData);
+  const { data } = useQuery(["terms-data"], fetchData);
   // reset toast
 
   useEffect(() => {
@@ -59,55 +60,51 @@ function SettingsCard() {
       clearTimeout(errorToastTimer);
     };
   }, [showSuccessToast, showErrorToast]);
-
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-lg font-semibold mb-4">School Information</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="text-gray-600">School Name</label>
-          <p className="text-gray-800">{data && data.school?.name}</p>
-        </div>
-        <div>
-          <label className="text-gray-600">Email</label>
-          <p className="text-gray-800">{data && data.school?.email}</p>
-        </div>
-        <div>
-          <label className="text-gray-600">Phone</label>
-          <p className="text-gray-800">{data && data.school?.phone}</p>
-        </div>
-        <div>
-          <label className="text-gray-600">Address</label>
-          <p className="text-gray-800">{data && data.school?.address}</p>
-        </div>
-        <div>
-          <label className="text-gray-600">Address 2</label>
-          <p className="text-gray-800">{data && data.school?.address2}</p>
-        </div>
-        <div>
-          <label className="text-gray-600">Town</label>
-          <p className="text-gray-800">{data && data.school?.town}</p>
-        </div>
-        <div className="col-span-2">
-          <label className="text-gray-600">School Motto</label>
-          <p className="text-gray-800">{data && data.school?.school_motto}</p>
-        </div>
-      </div>
-      <button
-        className="mt-6 bg-purple-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-600"
-        onClick={() => {
-          setUpdateModalOpen(true);
-        }}
-      >
-        Edit Information
-      </button>
-      <SchoolUpdate
-        open={updateModalOpen}
-        setShowSuccessToast={setShowSuccessToast}
-        setShowErrorToast={setShowErrorToast}
-        onClose={() => setUpdateModalOpen(false)}
-        objData={data && data?.school}
-      />
+    <>
+      {Array.isArray(data?.term) ? (
+        data?.term?.map((term) => (
+          <div key={term.id} className="bg-white rounded-lg shadow-md p-6 mb-4">
+            <h2 className="text-lg font-semibold mb-4">Term Information</h2>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="text-gray-600">Term Name</label>
+                <p className="text-gray-800">{term.name}</p>
+              </div>
+              <div>
+                <label className="text-gray-600">Start Date</label>
+                <p className="text-gray-800">
+                  {format(new Date(term.startDate), "yyyy-MM-dd")}
+                </p>
+              </div>
+              <div>
+                <label className="text-gray-600">End Date</label>
+                <p className="text-gray-800">
+                  {format(new Date(term.endDate), "yyyy-MM-dd")}
+                </p>
+              </div>
+            </div>
+            <button
+              className="mt-6 bg-purple-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-purple-600"
+              onClick={() => {
+                setUpdateModalOpen(true);
+                setSelectedData(term);
+              }}
+            >
+              Edit Term
+            </button>
+            <TermUpdate
+              open={updateModalOpen}
+              setShowSuccessToast={setShowSuccessToast}
+              setShowErrorToast={setShowErrorToast}
+              onClose={() => setUpdateModalOpen(false)}
+              objData={selectedData}
+            />
+          </div>
+        ))
+      ) : (
+        <div className="bg-white rounded-lg shadow-md p-6 mb-4">no data</div>
+      )}
       {showSuccessToast && (
         <Toast className="absolute bottom-4 left-4">
           <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
@@ -126,6 +123,6 @@ function SettingsCard() {
           <Toast.Toggle onClick={() => setShowErrorToast(false)} />
         </Toast>
       )}
-    </div>
+    </>
   );
 }

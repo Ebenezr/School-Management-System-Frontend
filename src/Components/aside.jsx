@@ -92,8 +92,12 @@ const Aside = () => {
               <Sidebar.Item href="#">Products</Sidebar.Item>
             </Sidebar.Collapse>
             <Sidebar.Collapse label="Settings" icon={gearicon}>
-              <Sidebar.Item href="school">School Info</Sidebar.Item>
-              <Sidebar.Item href="#">Academic Calender</Sidebar.Item>
+              <Sidebar.Item as={Link} to="/school">
+                School Info
+              </Sidebar.Item>
+              <Sidebar.Item as={Link} to="/calendar">
+                Academic Calender
+              </Sidebar.Item>
             </Sidebar.Collapse>
           </Sidebar.ItemGroup>
         </Sidebar.Items>
