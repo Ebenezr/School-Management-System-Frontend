@@ -246,7 +246,7 @@ const PaymentUpdate = ({
               <Controller
                 control={control}
                 name="amount"
-                defaultValue=""
+                defaultValue={objData?.amount ?? 0}
                 render={({ field }) => (
                   <TextInput
                     id="amount"
@@ -254,7 +254,9 @@ const PaymentUpdate = ({
                     required={true}
                     color={errors.amount ? "failure" : "gray"}
                     helperText={errors.amount?.message}
-                    {...field}
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
                   />
                 )}
               />
