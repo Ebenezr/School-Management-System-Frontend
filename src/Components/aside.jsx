@@ -98,6 +98,9 @@ const Aside = () => {
               <Sidebar.Item as={Link} to="/calendar">
                 Academic Calender
               </Sidebar.Item>
+              <Sidebar.Item as={Link} to="/fee-structure">
+                Fee Structure
+              </Sidebar.Item>
             </Sidebar.Collapse>
           </Sidebar.ItemGroup>
         </Sidebar.Items>
