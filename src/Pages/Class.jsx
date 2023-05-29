@@ -35,7 +35,10 @@ import { Button, Toast } from "flowbite-react";
 import ClassCreate from "../Components/modals/ClassCreate";
 import axios from "axios";
 import ClassUpdate from "../Components/modals/ClassUpdate";
-
+const KES = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "KES",
+});
 const Class = () => {
   const queryClient = useQueryClient();
   const [columnFilters, setColumnFilters] = useState([]);
@@ -113,9 +116,37 @@ const Class = () => {
       },
 
       {
-        accessorKey: "Teacher.first_name",
+        accessorKey: `Teacher`,
 
         header: "Class Teacher",
+        Cell: ({ cell }) => {
+          const teacher = cell.getValue() ?? {};
+          return `${teacher?.first_name} ${teacher?.last_name}`;
+        },
+      },
+      {
+        accessorKey: "term_1",
+        header: "Term 1 Fee",
+        Cell: ({ cell }) => {
+          const termFee = cell.getValue() ?? 0;
+          return KES.format(Number(termFee) ?? 0);
+        },
+      },
+      {
+        accessorKey: "term_2",
+        header: "Term 2 Fee",
+        Cell: ({ cell }) => {
+          const termFee = cell.getValue() ?? 0;
+          return KES.format(Number(termFee) ?? 0);
+        },
+      },
+      {
+        accessorKey: "term_3",
+        header: "Term 3 Fee",
+        Cell: ({ cell }) => {
+          const termFee = cell.getValue() ?? 0;
+          return KES.format(Number(termFee) ?? 0);
+        },
       },
     ],
 

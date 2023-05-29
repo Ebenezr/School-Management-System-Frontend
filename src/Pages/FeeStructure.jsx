@@ -32,9 +32,10 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Toast } from "flowbite-react";
-import ClassCreate from "../Components/modals/ClassCreate";
+
 import axios from "axios";
 import ClassUpdate from "../Components/modals/ClassUpdate";
+import TermFeeCreate from "../Components/modals/TermFeeCreate";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",
@@ -443,7 +444,7 @@ const FeeStructure = () => {
           </Toolbar>
         )}
       </Box>
-      <ClassCreate
+      <TermFeeCreate
         open={createModalOpen}
         setShowSuccessToast={setShowSuccessToast}
         setShowErrorToast={setShowErrorToast}
