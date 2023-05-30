@@ -6,7 +6,14 @@ module.exports = {
     "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        sm: "480px",
+        md: "768px",
+        lg: "1280px",
+        xl: "1440px",
+      },
+    },
   },
   plugins: [require("flowbite/plugin"), require("@tailwindcss/forms")],
 };
