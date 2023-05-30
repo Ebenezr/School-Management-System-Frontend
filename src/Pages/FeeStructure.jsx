@@ -32,14 +32,15 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Toast } from "flowbite-react";
-import ClassCreate from "../Components/modals/ClassCreate";
+
 import axios from "axios";
 import ClassUpdate from "../Components/modals/ClassUpdate";
+import TermFeeCreate from "../Components/modals/TermFeeCreate";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",
 });
-const Class = () => {
+const FeeStructure = () => {
   const queryClient = useQueryClient();
   const [columnFilters, setColumnFilters] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -55,6 +56,22 @@ const Class = () => {
     pageIndex: 0,
 
     pageSize: 10,
+  });
+  const [transformedData, setTransformedData] = useState([]);
+
+  // fetch classes
+  const fetchClassList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/classes/all`
+      );
+      return response.data.grade;
+    } catch (error) {
+      throw new Error("Error fetching class data");
+    }
+  };
+  const { data: classsList } = useQuery(["clas-data"], fetchClassList, {
+    cacheTime: 10 * 60 * 1000, // cache for 10 minutes
   });
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
@@ -73,7 +90,7 @@ const Class = () => {
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/classes`);
+      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/terms`);
 
       fetchURL.searchParams.set(
         "start",
@@ -99,58 +116,91 @@ const Class = () => {
     keepPreviousData: true,
   });
   useEffect(() => {
-    data && setTableData(data.items);
+    if (data) {
+      const transformData = (data) => {
+        const classes = {};
+
+        data.forEach((item) => {
+          const classId = item.TermFee[0]?.classId;
+          const termFee = {
+            id: item.TermFee[0]?.id,
+            amount: item.TermFee[0]?.amount,
+          };
+
+          if (classId && !classes[classId]) {
+            classes[classId] = {
+              classId: classId,
+              termFees: {},
+            };
+          }
+
+          classes[classId].termFees[item.name] = termFee;
+        });
+
+        return Object.values(classes);
+      };
+
+      const transformed = transformData(data.items);
+      setTransformedData(transformed);
+    }
   }, [data]);
+
+  useEffect(() => {
+    setTableData(transformedData);
+  }, [transformedData]);
+
+  console.log(tableData);
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: "id",
-
+        accessorKey: "classId",
         header: "Id",
+        key: "classIdKey",
       },
       {
-        accessorKey: "name",
+        accessorKey: "classId",
 
-        header: "Name",
-      },
-
-      {
-        accessorKey: `Teacher`,
-
-        header: "Class Teacher",
+        header: "Class",
+        size: 40,
         Cell: ({ cell }) => {
-          const teacher = cell.getValue() ?? {};
-          return `${teacher?.first_name} ${teacher?.last_name}`;
+          const classs = classsList?.find(
+            (classs) => classs.id === cell.getValue()
+          );
+          return `${classs?.name}`;
         },
       },
+      // 3 terms
       {
-        accessorKey: "term_1",
+        accessorKey: "termFees",
         header: "Term 1 Fee",
         Cell: ({ cell }) => {
-          const termFee = cell.getValue() ?? 0;
+          const termFee = cell.getValue()["Term 1"]?.amount || "-";
           return KES.format(Number(termFee) ?? 0);
         },
+        key: "term1FeeKey",
       },
       {
-        accessorKey: "term_2",
+        accessorKey: "termFees",
         header: "Term 2 Fee",
         Cell: ({ cell }) => {
-          const termFee = cell.getValue() ?? 0;
+          const termFee = cell.getValue()["Term 2"]?.amount || "-";
           return KES.format(Number(termFee) ?? 0);
         },
+        key: "term2FeeKey",
       },
       {
-        accessorKey: "term_3",
+        accessorKey: "termFees",
         header: "Term 3 Fee",
         Cell: ({ cell }) => {
-          const termFee = cell.getValue() ?? 0;
+          const termFee = cell.getValue()["Term 3"]?.amount || "-";
           return KES.format(Number(termFee) ?? 0);
         },
+        key: "term3FeeKey",
       },
     ],
 
-    []
+    [classsList]
   );
 
   const deletePost = useMutation((id) => {
@@ -211,7 +261,9 @@ const Class = () => {
   //column definitions...
   return (
     <section className="bg-white h-full w-full  p-4">
-      <h1 className="mb-4 font-semibold tracking-wide text-lg">Classs</h1>
+      <h1 className="mb-4 font-semibold tracking-wide text-lg">
+        Fee Structure
+      </h1>
       <Box className="border-slate-200 rounded border-[1px] p-4">
         {tableInstanceRef.current && (
           <Toolbar
@@ -241,7 +293,7 @@ const Class = () => {
                 outline={true}
                 gradientDuoTone="purpleToBlue"
               >
-                Add Class
+                Add Fee Structure
               </Button>
             </Box>
 
@@ -392,7 +444,7 @@ const Class = () => {
           </Toolbar>
         )}
       </Box>
-      <ClassCreate
+      <TermFeeCreate
         open={createModalOpen}
         setShowSuccessToast={setShowSuccessToast}
         setShowErrorToast={setShowErrorToast}
@@ -449,4 +501,4 @@ const Class = () => {
   );
 };
 
-export default Class;
+export default FeeStructure;

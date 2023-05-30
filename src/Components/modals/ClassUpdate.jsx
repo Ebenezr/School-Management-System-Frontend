@@ -16,6 +16,10 @@ const ClassUpdate = ({
 }) => {
   const FormSchema = z.object({
     name: z.string().min(2, { message: "Name is required" }),
+    term_1: z.number().optional(),
+    term_2: z.number().optional(),
+    term_3: z.number().optional(),
+    id: z.number().optional(),
   });
 
   const {
@@ -33,8 +37,12 @@ const ClassUpdate = ({
   // reset form
   useEffect(() => {
     reset({
+      id: objData?.id ?? 0,
       name: objData?.name ?? "",
       teacherId: objData?.teacherId ?? 0,
+      term_1: objData?.term_1 ?? 0,
+      term_2: objData?.term_2 ?? 0,
+      term_3: objData?.term_3 ?? 0,
     });
   }, [reset, objData]);
 
@@ -154,6 +162,84 @@ const ClassUpdate = ({
                       ))}
                     </Select>
                   </div>
+                )}
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label
+                  htmlFor="term_1"
+                  value="Term One Fee"
+                  color={errors.term_1 ? "failure" : "gray"}
+                />
+              </div>
+              <Controller
+                control={control}
+                name="term_1"
+                defaultValue={0}
+                render={({ field }) => (
+                  <TextInput
+                    id="term_1"
+                    placeholder="Term one "
+                    required={true}
+                    color={errors.term_1 ? "failure" : "gray"}
+                    helperText={errors.term_1?.message}
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label
+                  htmlFor="term_2"
+                  value="Term Two Fee"
+                  color={errors.term_2 ? "failure" : "gray"}
+                />
+              </div>
+              <Controller
+                control={control}
+                name="term_2"
+                defaultValue={0}
+                render={({ field }) => (
+                  <TextInput
+                    id="term_1"
+                    placeholder="Term two fee "
+                    required={true}
+                    color={errors.term_2 ? "failure" : "gray"}
+                    helperText={errors.term_2?.message}
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label
+                  htmlFor="term_3"
+                  value="Term Three Fee"
+                  color={errors.term_3 ? "failure" : "gray"}
+                />
+              </div>
+              <Controller
+                control={control}
+                name="term_3"
+                defaultValue={0}
+                render={({ field }) => (
+                  <TextInput
+                    id="term_3"
+                    placeholder="Term three fee "
+                    required={true}
+                    color={errors.term_3 ? "failure" : "gray"}
+                    helperText={errors.term_3?.message}
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
                 )}
               />
             </div>
