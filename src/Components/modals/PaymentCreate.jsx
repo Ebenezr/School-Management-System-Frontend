@@ -117,18 +117,15 @@ const PaymentCreate = ({
 
   // set classId when student is selected
   const selectedClass = useMemo(() => {
-    // console.log("studentId", studentId);
-    // console.log("studentsList", studentsList);
     const selectedStudent = studentsList?.find((student) => {
-      return student.id === studentId;
+      return student.id === Number(studentId);
     });
-    // console.log("selectedStudent", selectedStudent);
+
     if (selectedStudent) {
       setValue("classId", selectedStudent.classId);
     }
   }, [studentsList, studentId, setValue]);
 
-  // console.log("class", classId, "student", studentId, "term", termId);
   const { isLoading } = createPost;
   const onSubmit = async (data) => {
     try {
@@ -273,8 +270,8 @@ const PaymentCreate = ({
               <div className="py-3 grid grid-cols-2 gap-2">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                      paymentMode === "MPESA" ? "bg-purple-100" : ""
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "MPESA" ? "bg-purple-100" : "bg-white"
                     }`}
                   >
                     <Radio
@@ -295,8 +292,8 @@ const PaymentCreate = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                      paymentMode === "BANK" ? "bg-purple-100" : ""
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "BANK" ? "bg-purple-100" : "bg-white"
                     }`}
                   >
                     <Radio
@@ -317,8 +314,8 @@ const PaymentCreate = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                      paymentMode === "CASH" ? "bg-purple-100" : ""
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "CASH" ? "bg-purple-100" : "bg-white"
                     }`}
                   >
                     <Radio
@@ -339,8 +336,8 @@ const PaymentCreate = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-full border border-gray-300 p-2 rounded-md bg-white flex items-center cursor-pointer hover:bg-gray-200 ${
-                      paymentMode === "CHEQUE" ? "bg-purple-100" : ""
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 ${
+                      paymentMode === "CHEQUE" ? "bg-purple-100" : "bg-white"
                     }`}
                   >
                     <Radio
