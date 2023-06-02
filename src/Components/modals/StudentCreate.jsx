@@ -90,7 +90,10 @@ const StudentCreate = ({
 
   const createPost = useMutation(
     (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/students/post`, newPost),
+      axios.post(`${process.env.REACT_APP_BASE_URL}/students/post`, {
+        ...newPost,
+        additionalPayments,
+      }),
     {
       onSuccess: () => {
         setShowSuccessToast(true);
@@ -120,7 +123,7 @@ const StudentCreate = ({
   };
 
   return (
-    <Modal show={open} size="md" popup={true} onClose={onClose}>
+    <Modal show={open} size="lg" popup={true} onClose={onClose}>
       <Modal.Header />
       <Modal.Body>
         <div className="space-y-6 px-3 pb-4 sm:pb-6 lg:px-4 xl:pb-8 relative z-0">
@@ -128,54 +131,57 @@ const StudentCreate = ({
             Add New Student
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="first_name"
-                  value="First Name"
-                  color={errors.first_name ? "failure" : "gray"}
-                />
-              </div>
-              <Controller
-                control={control}
-                name="first_name"
-                defaultValue=""
-                render={({ field }) => (
-                  <TextInput
-                    id="first_name"
-                    placeholder="First name"
-                    required={true}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="first_name"
+                    value="First Name"
                     color={errors.first_name ? "failure" : "gray"}
-                    helperText={errors.first_name?.message}
-                    {...field}
                   />
-                )}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="last_name"
-                  value="Last Name"
-                  color={errors.last_name ? "failure" : "gray"}
+                </div>
+                <Controller
+                  control={control}
+                  name="first_name"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextInput
+                      id="first_name"
+                      placeholder="First name"
+                      required={true}
+                      color={errors.first_name ? "failure" : "gray"}
+                      helperText={errors.first_name?.message}
+                      {...field}
+                    />
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="last_name"
-                defaultValue=""
-                render={({ field }) => (
-                  <TextInput
-                    id="last_name"
-                    placeholder="Last name"
-                    required={true}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="last_name"
+                    value="Last Name"
                     color={errors.last_name ? "failure" : "gray"}
-                    helperText={errors.last_name?.message}
-                    {...field}
                   />
-                )}
-              />
+                </div>
+                <Controller
+                  control={control}
+                  name="last_name"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextInput
+                      id="last_name"
+                      placeholder="Last name"
+                      required={true}
+                      color={errors.last_name ? "failure" : "gray"}
+                      helperText={errors.last_name?.message}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
             </div>
+            {/* dob */}
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="dob" value="Date of Birth" />
@@ -215,82 +221,84 @@ const StudentCreate = ({
                 />
               </div>
             </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="gender"
-                  value="Gender"
-                  color={`${errors.gender ? "failure" : "gray"}`}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="gender"
+                    value="Gender"
+                    color={`${errors.gender ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="gender"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="gender"
+                        value={field.value}
+                        color={`${errors.gender ? "failure" : "gray"}`}
+                        {...field}
+                        helperText={errors.gender?.message}
+                        required={true}
+                      >
+                        <option value="" disabled>
+                          Select Gender
+                        </option>
+                        {gender.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                      {errors.gender && (
+                        <span className="text-failure">
+                          {errors.gender.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="gender"
-                defaultValue=""
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="gender"
-                      value={field.value}
-                      color={`${errors.gender ? "failure" : "gray"}`}
-                      {...field}
-                      helperText={errors.gender?.message}
-                      required={true}
-                    >
-                      <option value="" disabled>
-                        Select Gender
-                      </option>
-                      {gender.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
+              {/* select class */}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="classId"
+                    value="Class / Grade"
+                    color={`${errors.classId ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="classId"
+                  defaultValue={"0"}
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="classId"
+                        // type="number"
+                        value={field.value}
+                        color={`${errors.classId ? "failure" : "gray"}`}
+                        required={true}
+                        helperText={errors.classId?.message}
+                        {...field}
+                      >
+                        <option value={0} disabled>
+                          Select class
                         </option>
-                      ))}
-                    </Select>
-                    {errors.gender && (
-                      <span className="text-failure">
-                        {errors.gender.message}
-                      </span>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-            {/* select class */}
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="classId"
-                  value="Class / Grade"
-                  color={`${errors.classId ? "failure" : "gray"}`}
+                        {classList?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="classId"
-                defaultValue={"0"}
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="classId"
-                      // type="number"
-                      value={field.value}
-                      color={`${errors.classId ? "failure" : "gray"}`}
-                      required={true}
-                      helperText={errors.classId?.message}
-                      {...field}
-                    >
-                      <option value={0} disabled>
-                        Select class
-                      </option>
-                      {classList?.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-              />
             </div>
             {/* additional subscription checkboxes (food,bus_fee,boarding) */}
             <div className="py-2">
