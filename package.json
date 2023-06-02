@@ -9,9 +9,9 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.1",
     "@tanstack/react-query": "^4.29.7",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.4",
@@ -29,7 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -51,13 +51,28 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.22.4",
+    "@babel/preset-react": "^7.22.3",
     "@tailwindcss/forms": "^0.5.3",
     "autoprefixer": "^10.4.14",
+    "babel-jest": "^29.5.0",
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom-sixteen": "^2.0.0",
+    "msw": "^1.2.1",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "testEnvironmentOptions": {
+      "resources": "usable"
+    }
   }
 }
