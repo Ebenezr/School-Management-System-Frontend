@@ -358,18 +358,19 @@ const Student = () => {
             >
               <Typography>
                 Tuition Fee:{" "}
-                {KES.format(row.original?.StudentTermFee[0]?.tuition_fee)}
+                {KES.format(row.original?.StudentTermFee[0]?.tuition_fee ?? 0)}
               </Typography>
               <Typography>
-                Bus Fee: {KES.format(row.original?.StudentTermFee[0]?.bus_fee)}
+                Bus Fee:{" "}
+                {KES.format(row.original?.StudentTermFee[0]?.bus_fee ?? 0)}
               </Typography>
               <Typography>
                 Boarding Fee:{" "}
-                {KES.format(row.original?.StudentTermFee[0]?.boarding_fee)}
+                {KES.format(row.original?.StudentTermFee[0]?.boarding_fee ?? 0)}
               </Typography>
               <Typography>
                 Food Fee:{" "}
-                {KES.format(row.original?.StudentTermFee[0]?.food_fee)}
+                {KES.format(row.original?.StudentTermFee[0]?.food_fee ?? 0)}
               </Typography>
               <Typography>Status: {row.original?.status}</Typography>
             </Box>
