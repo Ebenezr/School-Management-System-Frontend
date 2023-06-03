@@ -88,6 +88,9 @@ const Aside = () => {
             <Sidebar.Item as={Link} to="/payments" icon={payicon}>
               Payments
             </Sidebar.Item>
+            <Sidebar.Item as={Link} to="/additional-payments" icon={payicon}>
+              Additional Payments
+            </Sidebar.Item>
             <Sidebar.Collapse label="Reports" icon={reporticon}>
               <Sidebar.Item href="#">Products</Sidebar.Item>
             </Sidebar.Collapse>

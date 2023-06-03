@@ -1,5 +1,12 @@
-import { Button, Label, Modal, Select, TextInput } from "flowbite-react";
-import React, { useEffect } from "react";
+import {
+  Button,
+  Checkbox,
+  Label,
+  Modal,
+  Select,
+  TextInput,
+} from "flowbite-react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +32,12 @@ const StudentCreate = ({
   setShowErrorToast,
   setShowSuccessToast,
 }) => {
+  const [additionalPayments, setAdditionalPayments] = useState({
+    food_fee: false,
+    bus_fee: false,
+    boarding_fee: false,
+  });
+
   const FormSchema = z.object({
     first_name: z.string().min(2, { message: "First name is required" }),
     last_name: z.string().min(2, { message: "Last name is required" }),
@@ -77,7 +90,10 @@ const StudentCreate = ({
 
   const createPost = useMutation(
     (newPost) =>
-      axios.post(`${process.env.REACT_APP_BASE_URL}/students/post`, newPost),
+      axios.post(`${process.env.REACT_APP_BASE_URL}/students/post`, {
+        ...newPost,
+        additionalPayments,
+      }),
     {
       onSuccess: () => {
         setShowSuccessToast(true);
@@ -91,6 +107,7 @@ const StudentCreate = ({
       },
     }
   );
+
   const classId = watch("classId") ?? "0";
   const { isLoading } = createPost;
   const onSubmit = async (data) => {
@@ -106,62 +123,65 @@ const StudentCreate = ({
   };
 
   return (
-    <Modal show={open} size="md" popup={true} onClose={onClose}>
+    <Modal show={open} size="lg" popup={true} onClose={onClose}>
       <Modal.Header />
       <Modal.Body>
-        <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8 relative z-0">
+        <div className="space-y-6 px-3 pb-4 sm:pb-6 lg:px-4 xl:pb-8 relative z-0">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">
             Add New Student
           </h3>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="first_name"
-                  value="First Name"
-                  color={errors.first_name ? "failure" : "gray"}
-                />
-              </div>
-              <Controller
-                control={control}
-                name="first_name"
-                defaultValue=""
-                render={({ field }) => (
-                  <TextInput
-                    id="first_name"
-                    placeholder="First name"
-                    required={true}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="first_name"
+                    value="First Name"
                     color={errors.first_name ? "failure" : "gray"}
-                    helperText={errors.first_name?.message}
-                    {...field}
                   />
-                )}
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="last_name"
-                  value="Last Name"
-                  color={errors.last_name ? "failure" : "gray"}
+                </div>
+                <Controller
+                  control={control}
+                  name="first_name"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextInput
+                      id="first_name"
+                      placeholder="First name"
+                      required={true}
+                      color={errors.first_name ? "failure" : "gray"}
+                      helperText={errors.first_name?.message}
+                      {...field}
+                    />
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="last_name"
-                defaultValue=""
-                render={({ field }) => (
-                  <TextInput
-                    id="last_name"
-                    placeholder="Last name"
-                    required={true}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="last_name"
+                    value="Last Name"
                     color={errors.last_name ? "failure" : "gray"}
-                    helperText={errors.last_name?.message}
-                    {...field}
                   />
-                )}
-              />
+                </div>
+                <Controller
+                  control={control}
+                  name="last_name"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextInput
+                      id="last_name"
+                      placeholder="Last name"
+                      required={true}
+                      color={errors.last_name ? "failure" : "gray"}
+                      helperText={errors.last_name?.message}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
             </div>
+            {/* dob */}
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="dob" value="Date of Birth" />
@@ -201,84 +221,175 @@ const StudentCreate = ({
                 />
               </div>
             </div>
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="gender"
-                  value="Gender"
-                  color={`${errors.gender ? "failure" : "gray"}`}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="gender"
+                    value="Gender"
+                    color={`${errors.gender ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="gender"
+                  defaultValue=""
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="gender"
+                        value={field.value}
+                        color={`${errors.gender ? "failure" : "gray"}`}
+                        {...field}
+                        helperText={errors.gender?.message}
+                        required={true}
+                      >
+                        <option value="" disabled>
+                          Select Gender
+                        </option>
+                        {gender.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                      {errors.gender && (
+                        <span className="text-failure">
+                          {errors.gender.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="gender"
-                defaultValue=""
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="gender"
-                      value={field.value}
-                      color={`${errors.gender ? "failure" : "gray"}`}
-                      {...field}
-                      helperText={errors.gender?.message}
-                      required={true}
-                    >
-                      <option value="" disabled>
-                        Select Gender
-                      </option>
-                      {gender.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
+              {/* select class */}
+              <div>
+                <div className="mb-2 block">
+                  <Label
+                    htmlFor="classId"
+                    value="Class / Grade"
+                    color={`${errors.classId ? "failure" : "gray"}`}
+                  />
+                </div>
+                <Controller
+                  control={control}
+                  name="classId"
+                  defaultValue={"0"}
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        id="classId"
+                        // type="number"
+                        value={field.value}
+                        color={`${errors.classId ? "failure" : "gray"}`}
+                        required={true}
+                        helperText={errors.classId?.message}
+                        {...field}
+                      >
+                        <option value={0} disabled>
+                          Select class
                         </option>
-                      ))}
-                    </Select>
-                    {errors.gender && (
-                      <span className="text-failure">
-                        {errors.gender.message}
-                      </span>
-                    )}
-                  </div>
-                )}
-              />
-            </div>
-            {/* select class */}
-            <div>
-              <div className="mb-2 block">
-                <Label
-                  htmlFor="classId"
-                  value="Class / Grade"
-                  color={`${errors.classId ? "failure" : "gray"}`}
+                        {classList?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                 />
               </div>
-              <Controller
-                control={control}
-                name="classId"
-                defaultValue={"0"}
-                render={({ field }) => (
-                  <div>
-                    <Select
-                      id="classId"
-                      // type="number"
-                      value={field.value}
-                      color={`${errors.classId ? "failure" : "gray"}`}
-                      required={true}
-                      helperText={errors.classId?.message}
-                      {...field}
-                    >
-                      <option value={0} disabled>
-                        Select class
-                      </option>
-                      {classList?.map((option) => (
-                        <option key={option.id} value={option.id}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-              />
             </div>
-
+            {/* additional subscription checkboxes (food,bus_fee,boarding) */}
+            <div className="py-2">
+              <Label>Additional Payments</Label>
+              <div className="grid grid-cols-3 gap-[3px] ">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 gap-2 ${
+                      additionalPayments?.bus_fee ? "bg-purple-100" : "bg-white"
+                    }
+                    `}
+                  >
+                    <Checkbox
+                      className="ring-0 focus:ring-0"
+                      id="bus_fee"
+                      checked={additionalPayments?.bus_fee}
+                      onChange={(e) => {
+                        setAdditionalPayments({
+                          ...additionalPayments,
+                          bus_fee: e.target.checked,
+                        });
+                      }}
+                    />
+                    <Label
+                      className="text-xs whitespace-nowrap"
+                      htmlFor="bus_fee"
+                    >
+                      Bus Fee
+                    </Label>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer hover:bg-gray-200 gap-2 ${
+                      additionalPayments?.boarding_fee
+                        ? "bg-purple-100"
+                        : "bg-white"
+                    }
+                    `}
+                  >
+                    <Checkbox
+                      className="ring-0 focus:ring-0"
+                      id="boarding_fee"
+                      checked={additionalPayments?.boarding_fee}
+                      onChange={(e) => {
+                        setAdditionalPayments({
+                          ...additionalPayments,
+                          boarding_fee: e.target.checked,
+                        });
+                      }}
+                    />
+                    <Label
+                      className="text-xs whitespace-nowrap"
+                      htmlFor="boarding_fee"
+                    >
+                      Boarding Fee
+                    </Label>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-full border border-gray-300 p-2 rounded-md  flex items-center cursor-pointer
+                    gap-2
+                    hover:bg-gray-200 ${
+                      additionalPayments?.food_fee
+                        ? "bg-purple-100"
+                        : "bg-white"
+                    }
+                    `}
+                  >
+                    <Checkbox
+                      className="ring-0 focus:ring-0"
+                      id="food_fee"
+                      checked={additionalPayments?.food_fee}
+                      onChange={(e) => {
+                        setAdditionalPayments({
+                          ...additionalPayments,
+                          food_fee: e.target.checked,
+                        });
+                      }}
+                    />
+                    <Label
+                      className="text-xs whitespace-nowrap"
+                      htmlFor="food_fee"
+                    >
+                      Food Fee
+                    </Label>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="w-full mt-3 flex items-end">
               <Button
                 className="ml-auto"

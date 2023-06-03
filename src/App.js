@@ -15,6 +15,7 @@ const Class = React.lazy(() => import("./Pages/Class"));
 const School = React.lazy(() => import("./Pages/Setting"));
 const Payment = React.lazy(() => import("./Pages/Payment"));
 const Calendar = React.lazy(() => import("./Pages/Calendar"));
+const AdditionalPayment = React.lazy(() => import("./Pages/AdditionalPayment"));
 
 // Create a client
 const queryClient = new QueryClient();
@@ -80,6 +81,14 @@ function App() {
                   element={
                     <Layout>
                       <Payment />
+                    </Layout>
+                  }
+                />
+                <Route
+                  path="/additional-payments"
+                  element={
+                    <Layout>
+                      <AdditionalPayment />
                     </Layout>
                   }
                 />

@@ -15,7 +15,6 @@ import MaterialReactTable, {
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFiltersButton,
 } from "material-react-table";
-import { format } from "date-fns";
 
 import {
   Box,
@@ -36,10 +35,12 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Delete, Edit } from "@mui/icons-material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Toast } from "flowbite-react";
-import PaymentCreate from "../Components/modals/PaymentCreate";
+
 import axios from "axios";
-import PaymentUpdate from "../Components/modals/PaymentUpdate";
+
 import { ThemeContext } from "../context/ThemeContext";
+import AdditionalPayUpdate from "../Components/modals/AdditionalPayCreate";
+import AdditionalPayCreate from "../Components/modals/AdditionalPayCreate";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",
@@ -57,7 +58,7 @@ const LightTheme = createTheme({
   },
 });
 
-const Payment = () => {
+const AdditionalPayment = () => {
   const { isDark } = useContext(ThemeContext);
   const queryClient = useQueryClient();
   const [columnFilters, setColumnFilters] = useState([]);
@@ -76,52 +77,24 @@ const Payment = () => {
     pageSize: 10,
   });
 
-  // fetch students
-  const fetchStudentsList = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/students/all`
-      );
-      return response.data.student;
-    } catch (error) {
-      throw new Error("Error fetching students data");
-    }
-  };
-  const { data: studentsList } = useQuery(["stud-data"], fetchStudentsList, {
-    cacheTime: 10 * 60 * 1000, // cache for 10 minutes
-  });
-  // fetch classes
-  const fetchClassList = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/classes/all`
-      );
-      return response.data.grade;
-    } catch (error) {
-      throw new Error("Error fetching class data");
-    }
-  };
-  const { data: classsList } = useQuery(["clas-data"], fetchClassList, {
-    cacheTime: 10 * 60 * 1000, // cache for 10 minutes
-  });
-
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: [
-      "payments-data",
+      "additionalfee-data",
 
-      columnFilters, //refetch when columnFilters changes
+      columnFilters,
+      globalFilter,
 
-      globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex,
 
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize,
 
-      pagination.pageSize, //refetch when pagination.pageSize changes
-
-      sorting, //refetch when sorting changes
+      sorting,
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/feepayments`);
+      const fetchURL = new URL(
+        `${process.env.REACT_APP_BASE_URL}/additionalfees`
+      );
 
       fetchURL.searchParams.set(
         "start",
@@ -158,47 +131,14 @@ const Payment = () => {
         header: "Id",
         size: 40,
       },
-      {
-        accessorKey: "studentId",
-
-        header: "Student Name",
-        Cell: ({ cell }) => {
-          const student = studentsList?.find(
-            (student) => student.id === cell.getValue()
-          );
-          return `${student?.first_name} ${student?.last_name}`;
-        },
-      },
 
       {
-        accessorKey: "payment_mode",
+        accessorKey: "name",
 
-        header: "Payment Mode",
+        header: "Payment Type",
         size: 40,
       },
 
-      {
-        accessorKey: "createdAt",
-
-        header: "Time Stamp",
-        size: 50,
-        Cell: ({ cell }) => {
-          const dateTime = cell.getValue?.();
-          return dateTime ? format(new Date(dateTime), "yyyy-MM-dd") : "";
-        },
-      },
-      {
-        accessorKey: "classId",
-
-        header: "Class",
-        size: 40,
-        Cell: ({ cell }) => {
-          const classs = classsList?.find(
-            (classs) => classs.id === cell.getValue()
-          );
-          return `${classs?.name}`;
-        },
-      },
       {
         accessorKey: "amount",
 
@@ -210,12 +150,12 @@ const Payment = () => {
       },
     ],
 
-    [classsList, studentsList]
+    []
   );
 
   const deletePost = useMutation((id) => {
     return axios
-      .delete(`${process.env.REACT_APP_BASE_URL}/feepayment/${id}`)
+      .delete(`${process.env.REACT_APP_BASE_URL}/additionalfee/${id}`)
       .then(() => {
         queryClient.invalidateQueries(["guest-data"]);
         setShowSuccessToast(true);
@@ -271,7 +211,9 @@ const Payment = () => {
   //column definitions...
   return (
     <section className=" h-full w-full  p-4">
-      <h1 className="mb-4 font-semibold tracking-wide text-lg">Payments</h1>
+      <h1 className="mb-4 font-semibold tracking-wide text-lg">
+        Additinal Payments
+      </h1>
       <ThemeProvider theme={isDark ? DarkTheme : LightTheme}>
         <Box className="border-slate-200 rounded border-[1px] p-4">
           {tableInstanceRef.current && (
@@ -459,13 +401,13 @@ const Payment = () => {
           )}
         </Box>
       </ThemeProvider>
-      <PaymentCreate
+      <AdditionalPayCreate
         open={createModalOpen}
         setShowSuccessToast={setShowSuccessToast}
         setShowErrorToast={setShowErrorToast}
         onClose={() => setCreateModalOpen(false)}
       />
-      <PaymentUpdate
+      <AdditionalPayUpdate
         open={updateModalOpen}
         setShowSuccessToast={setShowSuccessToast}
         setShowErrorToast={setShowErrorToast}
@@ -516,4 +458,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
+export default AdditionalPayment;
