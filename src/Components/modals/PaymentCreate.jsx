@@ -71,7 +71,7 @@ const PaymentCreate = ({
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/classes/all`
       );
-      return response.data.term;
+      return response.data.grade;
     } catch (error) {
       throw new Error("Error fetching class data");
     }
@@ -85,7 +85,7 @@ const PaymentCreate = ({
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/terms/all`
       );
-      return response.data.grade;
+      return response.data.term;
     } catch (error) {
       throw new Error("Error fetching term data");
     }
