@@ -16,7 +16,7 @@ const PaymentCreate = ({
 }) => {
   const [paymentMode, setPaymentMode] = React.useState("Cash");
   const FormSchema = z.object({
-    termId: z.string().min(1, "Select a class"),
+    termId: z.string().min(1, "Select a term"),
     classId: z.string().min(1, "Select a class"),
     studentId: z.string().min(1, "Select a student"),
     amount: z.number().refine((value) => value >= 0, {
