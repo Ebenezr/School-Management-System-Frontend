@@ -1,10 +1,14 @@
 import React from "react";
 import { PieChart, Cell, Pie, Tooltip } from "recharts";
 
+const KES = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "KES",
+});
 const data = [
-  { name: "MPESA", value: 400 },
-  { name: "BANK", value: 300 },
-  { name: "CHEQUE", value: 300 },
+  { name: "MPESA", value: 40000 },
+  { name: "BANK", value: 7000 },
+  { name: "CHEQUE", value: 3700 },
 ];
 
 const DataPie = () => {
@@ -34,14 +38,14 @@ const DataPie = () => {
             if (value === 0) {
               return null;
             }
-            return `${name}`;
+            return `${name} : ${KES.format(value)}`;
           }}
         >
           {data?.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
-        <Tooltip />
+        <Tooltip formatter={(value) => KES.format(value)} />
       </PieChart>
     </div>
   );
