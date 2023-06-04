@@ -23,8 +23,7 @@ const Dashboard = () => {
         students: studentsResponce.data.totalStudents,
         teachers: teachersResponce.data.totalTeachers,
         classes: classesResponce.data.totalClasses,
-        guardians: guardiansResponce.data.totalGuardians,    
-
+        guardians: guardiansResponce.data.totalGuardians,
       };
     } catch (error) {
       throw new Error("Error fetching data");
@@ -39,7 +38,7 @@ const Dashboard = () => {
   const guardiansCount = data?.guardians;
 
   return (
-    <section className="p-3">
+    <section className="p-3 ">
       <Stats
         studentsCount={studentsCount}
         teachersCount={teachersCount}
@@ -47,11 +46,9 @@ const Dashboard = () => {
         guardiansCount={guardiansCount}
         isLoading={isLoading}
       />
-      <>
-        <DataPie />
-      </>
-    </section>
 
+      <DataPie />
+    </section>
   );
 };
 
