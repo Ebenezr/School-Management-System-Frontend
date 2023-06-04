@@ -27,6 +27,7 @@ import {
   Pagination,
   Toolbar,
   Tooltip,
+  Typography,
 } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -343,6 +344,37 @@ const Student = () => {
 
             sorting,
           }}
+          renderDetailPanel={({ row }) => (
+            <Box
+              sx={{
+                display: "grid",
+
+                margin: "auto",
+
+                gridTemplateColumns: "1fr",
+
+                width: "100%",
+              }}
+            >
+              <Typography>
+                Tuition Fee:{" "}
+                {KES.format(row.original?.StudentTermFee[0]?.tuition_fee ?? 0)}
+              </Typography>
+              <Typography>
+                Bus Fee:{" "}
+                {KES.format(row.original?.StudentTermFee[0]?.bus_fee ?? 0)}
+              </Typography>
+              <Typography>
+                Boarding Fee:{" "}
+                {KES.format(row.original?.StudentTermFee[0]?.boarding_fee ?? 0)}
+              </Typography>
+              <Typography>
+                Food Fee:{" "}
+                {KES.format(row.original?.StudentTermFee[0]?.food_fee ?? 0)}
+              </Typography>
+              <Typography>Status: {row.original?.status}</Typography>
+            </Box>
+          )}
           {...(tableInstanceRef.current && (
             <Toolbar
               sx={{
