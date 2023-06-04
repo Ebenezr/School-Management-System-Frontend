@@ -2,9 +2,9 @@ import React from "react";
 import { PieChart, Cell, Pie, Tooltip } from "recharts";
 
 const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
+  { name: "MPESA", value: 400 },
+  { name: "BANK", value: 300 },
+  { name: "CHEQUE", value: 300 },
 ];
 
 const DataPie = () => {
