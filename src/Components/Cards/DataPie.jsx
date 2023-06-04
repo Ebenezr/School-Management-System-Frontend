@@ -37,7 +37,7 @@ const DataPie = () => {
             return `${name}`;
           }}
         >
-          {data?.map((index) => (
+          {data?.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
