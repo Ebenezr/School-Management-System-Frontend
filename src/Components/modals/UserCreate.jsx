@@ -256,7 +256,7 @@ const UserCreate = ({ onClose, open }) => {
                 type="submit"
                 isProcessing={isLoading}
               >
-                Add Student
+                Add User
               </Button>
             </div>
           </form>

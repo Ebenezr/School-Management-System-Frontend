@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
 import Stats from "../Components/Cards/Stats";
+import DataPie from "../Components/Cards/DataPie";
 
 const Dashboard = () => {
   const fetchData = async () => {
@@ -22,7 +23,8 @@ const Dashboard = () => {
         students: studentsResponce.data.totalStudents,
         teachers: teachersResponce.data.totalTeachers,
         classes: classesResponce.data.totalClasses,
-        guardians: guardiansResponce.data.totalGuardians,
+        guardians: guardiansResponce.data.totalGuardians,    
+
       };
     } catch (error) {
       throw new Error("Error fetching data");
@@ -45,7 +47,11 @@ const Dashboard = () => {
         guardiansCount={guardiansCount}
         isLoading={isLoading}
       />
+      <>
+        <DataPie />
+      </>
     </section>
+
   );
 };
 

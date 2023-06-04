@@ -121,7 +121,7 @@ const Login = () => {
       <div className="w-80">
         <Card>
           <p className="mx-auto tracking-wide font-semibold text-lg">
-            School Soft
+            Nakuru Vic Sch
           </p>
           <form
             className="flex flex-col gap-4"

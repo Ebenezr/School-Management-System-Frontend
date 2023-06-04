@@ -213,7 +213,7 @@ const TermUpdate = ({
                 type="submit"
                 isProcessing={isLoading}
               >
-                Save Student
+                Save Term
               </Button>
             </div>
           </form>

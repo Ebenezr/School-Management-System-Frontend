@@ -60,12 +60,16 @@ const Aside = () => {
     >
       <Sidebar aria-label="Sidebar Menu" className="rounded-none">
         <Sidebar.Logo href="#" img="favicon.png" imgAlt="">
-          School Soft
+          Nakuru Vic Sch
         </Sidebar.Logo>
         <Sidebar.Items>
           <Sidebar.ItemGroup>
             <Sidebar.Item as={Link} to="/dashboard" icon={dash}>
               Dashboard
+            </Sidebar.Item>
+
+            <Sidebar.Item as={Link} to="/teachers" icon={teachericon}>
+              Teachers
             </Sidebar.Item>
 
             <Sidebar.Item as={Link} to="/classes" icon={classicon}>
@@ -75,16 +79,11 @@ const Aside = () => {
             <Sidebar.Item as={Link} to="/students" icon={stud}>
               Students
             </Sidebar.Item>
-            <Sidebar.Item as={Link} to="/users" icon={usericon}>
-              Users
-            </Sidebar.Item>
+          
             <Sidebar.Item as={Link} to="/guardians" icon={guardicon}>
               Guardians
             </Sidebar.Item>
-            <Sidebar.Item as={Link} to="/teachers" icon={teachericon}>
-              Teachers
-            </Sidebar.Item>
-
+          
             <Sidebar.Item as={Link} to="/payments" icon={payicon}>
               Payments
             </Sidebar.Item>
@@ -94,6 +93,10 @@ const Aside = () => {
             <Sidebar.Collapse label="Reports" icon={reporticon}>
               <Sidebar.Item href="#">Products</Sidebar.Item>
             </Sidebar.Collapse>
+
+            <Sidebar.Item as={Link} to="/users" icon={usericon}>
+              Users
+            </Sidebar.Item>
             <Sidebar.Collapse label="Settings" icon={gearicon}>
               <Sidebar.Item as={Link} to="/school">
                 School Info
