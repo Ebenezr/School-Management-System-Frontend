@@ -50,9 +50,9 @@ const Dashboard = () => {
 
 
 
-      <div className="flex flex-row ...">
-        <DataPie />
+      <div className="flex flex-row ... gap-x-6">
         <BarChart />
+        <DataPie />
       </div>
 
     </section>

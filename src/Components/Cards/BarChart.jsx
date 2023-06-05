@@ -78,7 +78,7 @@ const data = [
           height={450}
           data={data}
           margin={{
-            top: 35,
+            top: 15,
             right: 0,
             left: 0,
             bottom: 0,
