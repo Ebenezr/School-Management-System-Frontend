@@ -7,7 +7,7 @@ const KES = new Intl.NumberFormat("en-US", {
 });
 const data = [
   { name: "MPESA", value: 45000 },
-  { name: "BANK", value: 70000 },
+  { name: "BANK", value: 7000 },
   { name: "CHEQUE", value: 37000 },
 ];
 
@@ -21,9 +21,9 @@ const DataPie = () => {
     "#4299E1",
   ];
   return (
-    <div className="bg-white mt-3 lg:h-96 md:h-auto p-2 w-full rounded-lg shadow">
+    <div className="bg-white mt-3 lg:h-96 md:h-auto p-2 w-150 rounded-lg shadow">
       <p className="text-gray-700 font-semibold">Payment Modes Stats</p>
-      <PieChart width={600} height={400} className="mx-auto my-auto ">
+      <PieChart width={500} height={400} className="mx-auto my-auto ">
         <Pie
           dataKey="value"
           isAnimationActive={false}
