@@ -6,9 +6,9 @@ const KES = new Intl.NumberFormat("en-US", {
   currency: "KES",
 });
 const data = [
-  { name: "MPESA", value: 40000 },
-  { name: "BANK", value: 7000 },
-  { name: "CHEQUE", value: 3700 },
+  { name: "MPESA", value: 45000 },
+  { name: "BANK", value: 70000 },
+  { name: "CHEQUE", value: 37000 },
 ];
 
 const DataPie = () => {
