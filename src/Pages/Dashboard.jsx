@@ -3,6 +3,7 @@ import axios from "axios";
 import React from "react";
 import Stats from "../Components/Cards/Stats";
 import DataPie from "../Components/Cards/DataPie";
+import BarChart from "../Components/Cards/BarChart";
 
 const Dashboard = () => {
   const fetchData = async () => {
@@ -47,7 +48,13 @@ const Dashboard = () => {
         isLoading={isLoading}
       />
 
-      <DataPie />
+
+
+      <div className="flex flex-row ... gap-x-6">
+        <BarChart />
+        <DataPie />
+      </div>
+
     </section>
   );
 };
