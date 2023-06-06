@@ -122,7 +122,7 @@ const PaymentCreate = ({
     });
 
     if (selectedStudent) {
-      setValue("classId", selectedStudent.classId);
+      setValue("classId", `${selectedStudent.classId}`);
     }
   }, [studentsList, studentId, setValue]);
 
