@@ -4,7 +4,7 @@ import { jsPDF } from "jspdf";
 import { Document as PDFDocument, Page as PDFPage, pdfjs } from "react-pdf";
 import { format } from "date-fns";
 import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.entry";
-import styles from "../styles/Home.module.css";
+import styles from "../index.css";
 import "jspdf-autotable";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
