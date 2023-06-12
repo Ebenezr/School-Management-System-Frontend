@@ -144,11 +144,11 @@ function Invoice({ payments }) {
         const title = schoolData[0]?.name ?? "RoomSoft";
         const companyName = schoolData[0]?.name ?? "";
         const companyAddress = schoolData[0]?.address ?? "";
-        const companyAddress2 = schoolData[0]?.entityType ?? "";
-        const companyAddress3 = schoolData[0]?.website ?? "";
+        const companyAddress2 = schoolData[0]?.address2 ?? "";
         const companyPhone = schoolData[0]?.phone ?? "";
-        const companyPhone2 = schoolData[0]?.logoUrl ?? "";
+        const companyPhone2 = schoolData[0]?.phone2 ?? "";
         const companyEmail = schoolData[0]?.email ?? "";
+        const companyTown = schoolData[0]?.town ?? "";
         const titleWidth = doc.getStringUnitWidth(title) * doc.getFontSize();
 
         const balance = payments.balance || 0;
@@ -190,7 +190,7 @@ function Invoice({ payments }) {
         doc.setFontSize(12);
         doc.text(companyAddress, 20, 27);
         doc.text(companyAddress2, 20, 33);
-        doc.text(companyAddress3, 20, 39);
+        doc.text(companyTown, 20, 39);
         doc.text("Tel:", doc.internal.pageSize.getWidth() / 2 + 10, 27);
         doc.text(
           `${companyPhone} / ${companyPhone2}`,
@@ -210,40 +210,6 @@ function Invoice({ payments }) {
         doc.text(`Guest Name: ${getStudentName(payments)}`, 20, 55);
         const roomTableTitle = "Room Summary";
 
-        const roomTableTitleWidth =
-          doc.getStringUnitWidth(roomTableTitle) * doc.getFontSize();
-        doc.text(roomTableTitle, 20, 65);
-        doc.line(20, 70, doc.internal.pageSize.getWidth() - 20, 70);
-        doc.autoTable({
-          startY: 75,
-          head: [["Room", "Room Type", "Check In", "Check Out"]],
-          body: [
-            [
-              getClassName(payments),
-
-              format(new Date(payments?.checkIn), "do, MMM yyyy"),
-              format(new Date(payments?.checkOut), "do, MMM yyyy"),
-            ],
-          ],
-          foot: [["", "", "Room Total", `${KES.format(roomTotal)}`]],
-          styles: {
-            fillColor: false,
-            lineColor: [0, 0, 0],
-          },
-          headStyles: {
-            fillColor: false,
-            textColor: [0, 0, 0],
-          },
-          footStyles: {
-            fillColor: false,
-            textColor: [0, 0, 0],
-          },
-          didDrawCell: (data) => {
-            if (data.section === "body") {
-              data.cell.styles.fillColor = "#F8F8F8";
-            }
-          },
-        });
         // Add the services table to the PDF
         if (payments.Service) {
           const servicesData = payments.Service.map((service) => [
@@ -260,33 +226,6 @@ function Invoice({ payments }) {
           let discount = payments.discount || 0;
           let netTotal = payments.netTotal || 0;
 
-          const servicesTableTitle = "Services Details";
-          const servicesTableTitleWidth =
-            doc.getStringUnitWidth(servicesTableTitle) * doc.getFontSize();
-          doc.text(servicesTableTitle, 20, 110);
-          doc.line(20, 115, doc.internal.pageSize.getWidth() - 20, 115);
-
-          doc.autoTable({
-            startY: 120,
-            head: [["Name", "Qty", "Unit Price", "Total Price"]],
-            body: servicesData,
-            foot: [
-              ["", "", "Services Total", KES.format(subtotal - roomTotal)],
-            ],
-            styles: {
-              fillColor: false,
-              lineColor: [0, 0, 0],
-            },
-            headStyles: {
-              fillColor: false,
-              textColor: [0, 0, 0],
-            },
-            footStyles: {
-              fillColor: false,
-              textColor: [0, 0, 0],
-            },
-          });
-          // display nettotal, grand total,balance,tax,discount
           // net total
           doc.text(
             `Net Total: ${KES.format(netTotal)}`,
@@ -294,11 +233,6 @@ function Invoice({ payments }) {
             doc.autoTable.previous.finalY + 17
           );
           // tax
-          // doc.text(
-          //   `Tax: ${KES.format(taxTotal)}`,
-          //   20,
-          //   doc.autoTable.previous.finalY + 10
-          // );
           // discount
           doc.text(
             `Discount: ${KES.format(discount)}`,
@@ -334,37 +268,6 @@ function Invoice({ payments }) {
               payment.referenceId,
               payment.amount,
             ]);
-
-            const paymentsTableTitle = "Payments Summary";
-            const paymentsTableTitleWidth =
-              doc.getStringUnitWidth(paymentsTableTitle) * doc.getFontSize();
-            doc.text(paymentsTableTitle, 20, startY);
-            doc.line(
-              20,
-              startY + 5,
-              doc.internal.pageSize.getWidth() - 20,
-              startY + 5
-            );
-
-            doc.autoTable({
-              startY: startY + 5,
-              head: [["Mode", "Reference", "Amount"]],
-              body: paymentsData,
-              foot: [["", "Paid Total", KES.format(paid)]],
-
-              styles: {
-                fillColor: false,
-                lineColor: [0, 0, 0],
-              },
-              headStyles: {
-                fillColor: false,
-                textColor: [0, 0, 0],
-              },
-              footStyles: {
-                fillColor: false,
-                textColor: [0, 0, 0],
-              },
-            });
           }
         }
 
@@ -376,14 +279,7 @@ function Invoice({ payments }) {
         doc.text(thankYouText, centerX, startY1, {
           align: "center",
         });
-        if (payments.staffId) {
-          const staffname = staffList.find(
-            (staff) => staff.id === payments.staffId
-          )?.name;
-          doc.text(`You were served by ${staffname}`, centerX, startY1 + 10, {
-            align: "center",
-          });
-        }
+
         const blob = doc.output("blob");
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
@@ -392,7 +288,7 @@ function Invoice({ payments }) {
         console.error("Error generating PDF:", error);
       }
     }
-  }, [payments, getStudentName, getClassName, getTermName, schoolData]);
+  }, [payments, getStudentName, schoolData]);
 
   const printPDF = () => {
     if (!pdfUrl) return;
