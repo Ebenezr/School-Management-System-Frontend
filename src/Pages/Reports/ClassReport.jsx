@@ -20,6 +20,7 @@ import {
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 const KES = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "KES",
@@ -38,10 +39,28 @@ const StudentClassReport = () => {
 
     pageSize: 10,
   });
+  const [selectedGrade, setSelectedGrade] = useState();
+  const handleChange = (e) => {
+    setSelectedGrade(e.target.value || null);
+  };
+
+  const fetchTeachersList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/classes/all`
+      );
+      return response.data.grade;
+    } catch (error) {
+      throw new Error("Error fetching class data");
+    }
+  };
+  const { data: classList } = useQuery(["classes-data"], fetchTeachersList, {
+    cacheTime: 10 * 60 * 1000, // cache for 10 minutes
+  });
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: [
-      "students-data",
+      "class-data",
 
       columnFilters, //refetch when columnFilters changes
 
@@ -55,7 +74,9 @@ const StudentClassReport = () => {
     ],
 
     queryFn: async () => {
-      const fetchURL = new URL(`${process.env.REACT_APP_BASE_URL}/students`);
+      const fetchURL = new URL(
+        `${process.env.REACT_APP_BASE_URL}/class/${selectedGrade}/students`
+      );
 
       fetchURL.searchParams.set(
         "start",
@@ -83,6 +104,12 @@ const StudentClassReport = () => {
   useEffect(() => {
     data && setTableData(data.items);
   }, [data]);
+
+  useEffect(() => {
+    if (selectedGrade) {
+      refetch();
+    }
+  }, [selectedGrade, refetch]);
 
   const columns = useMemo(
     () => [
@@ -175,6 +202,34 @@ const StudentClassReport = () => {
               p: "1.5rem 0",
             })}
           >
+            <Box>
+              <div className="">
+                <select
+                  title="Select a Class"
+                  name="grade"
+                  id="grade-select"
+                  value={selectedGrade ?? ""}
+                  onChange={handleChange}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-10 py-2 appearance-none dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option value="">Select Class</option>
+                  {classList?.map((grade) => (
+                    <option key={grade?.id} value={grade?.id}>
+                      {grade?.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" />
+                  </svg>
+                </div>
+              </div>
+            </Box>
             <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
 
             <Box>
