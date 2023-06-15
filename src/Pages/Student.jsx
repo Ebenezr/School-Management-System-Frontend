@@ -139,26 +139,32 @@ const Student = () => {
         header: "Class",
       },
       {
-        accessorKey: "StudentTermFee[0]", // Update the index based on the correct position in the array
+        accessorKey: "StudentTermFee[0].total_fee",
 
         header: "Total Fee",
         size: 50,
         Cell: ({ row }) => {
           const studentTermFee = row.original.StudentTermFee[0]; // Access the correct index
           const totalFee = studentTermFee
-            ? Number(studentTermFee.total_fee)
+            ? Number(studentTermFee.term_one_fee) +
+              Number(studentTermFee.bus_fee) +
+              Number(studentTermFee.boarding_fee) +
+              Number(studentTermFee.food_fee)
             : 0;
           return `${KES.format(totalFee)}`;
         },
       },
+
       {
-        accessorKey: "StudentTermFee[0]", // Update the index based on the correct position in the array
+        accessorKey: "StudentTermFee[0]",
 
         header: "Fee Balance",
         size: 50,
         Cell: ({ row }) => {
           const studentTermFee = row.original.StudentTermFee[0]; // Access the correct index
-          const balance = studentTermFee ? Number(studentTermFee.balance) : 0;
+          const balance = studentTermFee
+            ? Number(studentTermFee.term_one_balance)
+            : 0;
           return `${KES.format(balance)}`;
         },
       },
